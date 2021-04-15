@@ -1,0 +1,11 @@
+{
+    "development": {
+        "username": "root",
+        "password": "",
+        "database": "hawilti",
+        "host": "127.0.0.1",
+        "dialect": "mysql",
+        "freezeTableName": true,
+        "operatorsAliases": false
+    }
+}
