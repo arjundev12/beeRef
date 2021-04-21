@@ -2,87 +2,52 @@
 
 const utilities = require('util');
 const config = require('../../../config/config')
-const walletModel = require('../../models/wallet')
+const NewsModel = require('../../models/news')
+const BlogModel = require('../../models/blogs')
 var jwt = require('jsonwebtoken');
-var verifyOptions = {
-    issuer: config.i,
-    subject: config.s,
-    audience: config.BASE_URL,
-    expiresIn: config.tempTokenExpiresTime,
-    algorithm: config.algorithm
-};
-const nodemailer = require('nodemailer');
 
 class Common {
     constructor() {
         return {
-            jwtDecode: this.jwtDecode.bind(this),
-            emailsenderdyanmic: this.emailsenderdyanmic.bind(this),
-            _createWallet: this._createWallet.bind(this)
+            getBlogs: this.getBlogs.bind(this),
+            getNews: this.getNews.bind(this),
         }
     }
     
-    async jwtDecode(token) {
+      async getNews(req, res) {
         try {
-            let tokeData = await jwt.verify(token, config.superSecret)
-            if (tokeData) {
-                return tokeData
+            let options = {
+                offset: req.body.offset || 0,
+                limit: req.body.limit || 10,
+                sort: { createdAt: -1 },
+                lean: true,
             }
+            let query = {}
+            let data = await NewsModel.paginate(query, options)
+            console.log("news", data)
+            res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
         } catch (error) {
-            console.log("failed authentication in jwt decode")
+            console.log("Error in catch", error)
+            res.status(500).json({ success: false, message: "Internal server error", })
         }
-
     }
-   
 
-    async emailsenderdyanmic(data) {
-      if (data.from && Array.isArray(data.to) && data.password && data.subject && data.text) {
-          var transporter = nodemailer.createTransport({
-              service: 'gmail',
-              auth: {
-                  user: data.from,
-                  pass: data.password
-              },
-              port: 587,
-              host: 'smtp.gmail.com',
-              // tls: {
-              //   rejectUnauthorized: false
-              // }
-          });
-         
-          try{
-            var info = await transporter.sendMail({
-              from: data.from,
-              to: data.to,
-              subject: data.subject,
-              text: data.text
-            });
-            console.log('Data email', info);
-            return "Mail send";
-          }catch(err){
-            console.log('Error while sending mail', err);
-            return "please check email or password or please turn on less secure app access";
-          }
-      }
-      else {
-          return "please send proper parameter to the function";
-      }
-    }
-    async _createWallet(id , type) {
+    async getBlogs(req, res) {
         try {
-            let saveData1 = {}
-             saveData1.wallet_type = type;
-             saveData1.user_id= id
-             saveData1.status = 'active'
-
-            let saveData = new walletModel(saveData1)
-            await saveData.save();
-            console.log("wallet create successfully")
+            let options = {
+                offset: req.body.offset || 0,
+                limit: req.body.limit || 10,
+                sort: { createdAt: -1 },
+                lean: true,
+            }
+            let query = {}
+            let data = await BlogModel.paginate(query, options)
+            console.log("news", data)
+            res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
         } catch (error) {
-            console.error("error in _createWallet", error)
+            console.log("Error in catch", error)
+            res.status(500).json({ success: false, message: "Internal server error", })
         }
-        return true
-
     }
 
 }

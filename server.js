@@ -12,6 +12,9 @@ var expressValidator = require('express-validator');
 const mongodb=require('./config/mongodb');
 // const io = require('./socket').listen(server);
 // XSS Security  
+var multer = require('multer');
+var upload = multer();
+
 
 app.use(helmet());
 app.use(bodyParser.json({ limit: "220mb" }));
@@ -19,6 +22,8 @@ app.use(bodyParser.urlencoded({ limit: "220mb", extended: true, parameterLimit: 
 app.use(express.urlencoded({
     extended: true
 }));
+
+app.use(upload.array()); 
 app.use(expressValidator()); //middleware for validation
 
 global.globalPath=__dirname;

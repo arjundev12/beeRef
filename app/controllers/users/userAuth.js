@@ -1,5 +1,5 @@
 const config = require("../../../config/config")
-const commenFunction = require('../common/Common')
+const commenFunction = require('../../middlewares/common')
 const UsersModel = require('../../models/users');
 const moment = require("moment");
 const bcrypt = require('bcryptjs');
@@ -15,6 +15,8 @@ class users {
             uploadeImage: this.uploadeImage.bind(this),
             submitReferral: this.submitReferral.bind(this),
             getTeam: this.getTeam.bind(this),
+            // getNews: this.getNews.bind(this),
+            // getBlogs: this.getBlogs.bind(this)
             // uploadeImage: this.uploadeImage.bind(this),
             // submitReferral: this.submitReferral.bind(this)
         }
@@ -322,8 +324,6 @@ class users {
             res.status(500).json({ success: false, message: "Internal server error", })
         }
     }
-
-
 
 }
 

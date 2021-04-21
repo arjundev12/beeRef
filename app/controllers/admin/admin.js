@@ -1,7 +1,7 @@
 
 
 const config = require("../../../config/config")
-const commenFunction = require('../common/Common')
+const commenFunction = require('../../middlewares/common')
 const UsersModel = require('../../models/users');
 const moment = require("moment");
 const bcrypt = require('bcryptjs');
