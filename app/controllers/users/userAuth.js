@@ -55,7 +55,7 @@ class users {
             let getUser
             console.log("logintype ", login_type, social_media_key)
             if (login_type == 'manual') {
-                getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: login_type }] })
+                getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: login_type },{ user_type: 'user' }] })
                 console.log("getUser", getUser)
                 if (getUser) {
                     error = true
@@ -75,7 +75,7 @@ class users {
                     await commenFunction._createWallet(data._id, 'user')
                 }
             } else if (social_media_key) {
-                getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: login_type }] })
+                getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: login_type },{ user_type: 'user' }] })
                 if (getUser) {
                     data = await UsersModel.findOneAndUpdate(
                         {
@@ -161,7 +161,7 @@ class users {
     async login(req, res) {
         try {
             let { email, password } = req.body
-            let getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: 'manual' }] },
+            let getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: 'manual' },{ user_type: 'user' }] },
                 { username: 1, email: 1, Referral_id: 1, password: 1, login_type: 1 }).lean()
             console.log("getUser", getUser)
             if (getUser) {
@@ -189,7 +189,7 @@ class users {
             let { name, email, username, number, profile_pic, login_type, country } = req.body
             console.log("getUser", name, email, username, number, profile_pic, login_type, country)
 
-            let getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: login_type }] }).lean()
+            let getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: login_type },{ user_type: 'user' }] }).lean()
             console.log("getUser", getUser)
             if (getUser) {
                 let updateData = {
@@ -273,6 +273,7 @@ class users {
     }
     async uploadeImage(req, res) {
         try {
+            console.log("hiiiiiii", req.body, req.file)
             if (req.file) {
                 res.json({ code: 200, success: true, message: 'uploade successfully', data: req.file })
             } else {

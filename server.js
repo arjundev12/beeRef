@@ -41,6 +41,7 @@ app.use(function (req, res, next) { // Website you wish to allow to connect
 app.use(cors());
 
 app.use('/api/user', require('./app/routes/users'));
+app.use('/api/admin', require('./app/routes/admin'));
 
 server.listen(PORT, function (err) {
     if (err) {
