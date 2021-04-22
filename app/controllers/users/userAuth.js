@@ -57,7 +57,7 @@ class users {
             let getUser
             console.log("logintype ", login_type, social_media_key)
             if (login_type == 'manual') {
-                getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: login_type },{ user_type: 'user' }] })
+                getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: login_type }, { user_type: 'user' }] })
                 console.log("getUser", getUser)
                 if (getUser) {
                     error = true
@@ -77,7 +77,7 @@ class users {
                     await commenFunction._createWallet(data._id, 'user')
                 }
             } else if (social_media_key) {
-                getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: login_type },{ user_type: 'user' }] })
+                getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: login_type }, { user_type: 'user' }] })
                 if (getUser) {
                     data = await UsersModel.findOneAndUpdate(
                         {
@@ -163,7 +163,7 @@ class users {
     async login(req, res) {
         try {
             let { email, password } = req.body
-            let getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: 'manual' },{ user_type: 'user' }] },
+            let getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: 'manual' }, { user_type: 'user' }] },
                 { username: 1, email: 1, Referral_id: 1, password: 1, login_type: 1 }).lean()
             console.log("getUser", getUser)
             if (getUser) {
@@ -191,7 +191,7 @@ class users {
             let { name, email, username, number, profile_pic, login_type, country } = req.body
             console.log("getUser", name, email, username, number, profile_pic, login_type, country)
 
-            let getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: login_type },{ user_type: 'user' }] }).lean()
+            let getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: login_type }, { user_type: 'user' }] }).lean()
             console.log("getUser", getUser)
             if (getUser) {
                 let updateData = {
@@ -291,34 +291,45 @@ class users {
             let data = await UsersModel.findOne({ _id: id }, {
                 ref_to_users: 0,
                 password: 0,
-                block_user:0,
-                user_type:0,
-                is_email_verify:0,
-                is_number_verify:0,
+                block_user: 0,
+                user_type: 0,
+                is_email_verify: 0,
+                is_number_verify: 0,
                 is_super_admin: 0,
                 number: 0
             }).lean()
             return data
         } catch (error) {
-
+            console.log("Error in catch", error)
         }
     }
     async getTeam(req, res) {
         try {
             let data
             let _id = req.query._id
-            data = await UsersModel.findOne({ _id: _id }, { ref_to_users: 1 }).lean()
+            data = await UsersModel.findOne({ _id: _id }, {
+                block_user: 0,
+                user_type: 0,
+                is_email_verify: 0,
+                is_number_verify: 0,
+                current_rank: 0,
+                is_super_admin: 0,
+                password: 0,
+                createdAt: 0,
+                __v: 0
+            }).lean()
             let arrayList = [];
             if (data.ref_to_users) {
                 for (let item of data.ref_to_users) {
                     let userData = {}
-                    if (item.status == 'active') {
-                        userData = await this._getUserData(item.id)
-                        arrayList.push(userData)
-                    }
+                    userData = await this._getUserData(item.id)
+                    userData.status = item.status
+                    arrayList.push(userData)
                 }
             }
-            res.json({ code: 200, success: true, message: 'uploade successfully', data: arrayList })
+            data.team = arrayList
+            delete data.ref_to_users;
+            res.json({ code: 200, success: true, message: 'uploade successfully', data: data })
         } catch (error) {
             console.log("Error in catch", error)
             res.status(500).json({ success: false, message: "Internal server error", })
