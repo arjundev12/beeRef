@@ -163,6 +163,10 @@ class FrontEntValidator {
         // return next();
         if (Object.keys(req.body).length <=8) {
                 req.checkBody({
+                    _id: {
+                        notEmpty: true,
+                        errorMessage: { "field_name": "_id", "error_msg": '_id is required' },
+                    },
                     email: {
                         notEmpty: true,
                         errorMessage: { "field_name": "email", "error_msg": 'email is required' },

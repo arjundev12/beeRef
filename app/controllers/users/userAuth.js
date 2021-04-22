@@ -113,12 +113,12 @@ class users {
             } else if (error) {
                 res.json({ code: 404, success: false, message: 'Email already exist', data: getUser.email })
             } else {
-                res.status(404).json({ success: false, message: "Somthing went wrong", })
+                res.json({ success: false, message: "Somthing went wrong", })
             }
 
         } catch (error) {
             console.log("Error in catch", error)
-            res.status(500).json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Internal server error", })
         }
 
     }
@@ -149,15 +149,15 @@ class users {
                 errorMessage = "Authentication is Failed"
             }
             if (errorMessage) {
-                res.status(400).json({ success: false, message: errorMessage })
+                res.json({ success: false, message: errorMessage })
             } else {
-                res.status(200).json({ success: true, message: successMessage })
+                res.json({ success: true, message: successMessage })
             }
 
 
         } catch (error) {
             console.log("error in catch", error)
-            res.status(500).json({ success: false, message: "Internal server error", data: null })
+            res.json({ success: false, message: "Internal server error", data: null })
         }
 
     }
@@ -184,15 +184,14 @@ class users {
             }
         } catch (error) {
             console.log("Error in catch", error)
-            res.status(500).json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Internal server error", })
         }
     }
     async UpdateProfile(req, res) {
         try {
-            let { name, email, username, number, profile_pic, login_type, country } = req.body
+            let { _id,name, email, username, number, profile_pic, login_type, country } = req.body
             console.log("getUser", name, email, username, number, profile_pic, login_type, country)
-
-            let getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: login_type }, { user_type: 'user' }] }).lean()
+            let getUser = await UsersModel.findOne({ $and: [{ _id: _id },{ email: email }, { login_type: login_type }, { user_type: 'user' }] }).lean()
             console.log("getUser", getUser)
             if (getUser) {
                 let updateData = {
@@ -206,7 +205,7 @@ class users {
                 if (profile_pic) {
                     updateData.profile_pic = profile_pic
                 }
-                let updateUser = await UsersModel.findOneAndUpdate({ $and: [{ email: email }, { login_type: login_type }] }, { $set: updateData }, { new: true })
+                let updateUser = await UsersModel.findOneAndUpdate({ $and: [{ _id: _id },{ email: email }, { login_type: login_type }] }, { $set: updateData }, { new: true })
                 if (updateUser) {
                     res.json({ code: 200, success: true, message: 'profile update successfully', data: updateUser })
                 }
@@ -215,7 +214,11 @@ class users {
             }
         } catch (error) {
             console.log("Error in catch", error)
-            res.status(500).json({ success: false, message: "Internal server error", })
+            if (error.codeName == 'DuplicateKey'){
+                res.json({ code: 400, success: false, message: `${ Object.keys(error.keyValue)} is already exist`, })
+            }else{
+                res.json({code: 500, success: false, message: "Internal server error", })
+            }
         }
     }
 
@@ -271,7 +274,7 @@ class users {
 
         } catch (error) {
             console.log("Error in catch", error)
-            res.status(500).json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Internal server error", })
         }
     }
     async uploadeImage(req, res) {
@@ -280,11 +283,11 @@ class users {
             if (req.file) {
                 res.json({ code: 200, success: true, message: 'uploade successfully', data: req.file })
             } else {
-                res.status(500).json({ success: false, message: "Internal server error", })
+                res.json({ success: false, message: "Internal server error", })
             }
 
         } catch (error) {
-            res.status(500).json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Internal server error", })
         }
     }
     async _getUserData(id) {
@@ -321,7 +324,7 @@ class users {
             res.json({ code: 200, success: true, message: 'uploade successfully', data: arrayList })
         } catch (error) {
             console.log("Error in catch", error)
-            res.status(500).json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Internal server error", })
         }
     }
 
@@ -349,7 +352,7 @@ class users {
             res.json({ code: 200, success: true, message: 'uploade successfully', data: data })
         } catch (error) {
             console.log("Error in catch", error)
-            res.status(500).json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Internal server error", })
         }
     }
 }
