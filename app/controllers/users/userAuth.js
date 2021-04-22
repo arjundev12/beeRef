@@ -15,6 +15,7 @@ class users {
             uploadeImage: this.uploadeImage.bind(this),
             submitReferral: this.submitReferral.bind(this),
             getTeam: this.getTeam.bind(this),
+            getUserDetails: this.getUserDetails.bind(this)
             // getNews: this.getNews.bind(this),
             // getBlogs: this.getBlogs.bind(this)
             // uploadeImage: this.uploadeImage.bind(this),
@@ -307,12 +308,28 @@ class users {
         try {
             let data
             let _id = req.query._id
+            data = await UsersModel.findOne({ _id: _id }, {ref_to_users: 1 }).lean()
+            let arrayList = [];
+            if (data.ref_to_users) {
+                for (let item of data.ref_to_users) {
+                    let userData = {}
+                    userData = await this._getUserData(item.id)
+                    userData.status = item.status
+                    arrayList.push(userData)
+                }
+            }
+            res.json({ code: 200, success: true, message: 'uploade successfully', data: arrayList })
+        } catch (error) {
+            console.log("Error in catch", error)
+            res.status(500).json({ success: false, message: "Internal server error", })
+        }
+    }
+
+    async getUserDetails(req, res) {
+        try {
+            let data
+            let _id = req.query._id
             data = await UsersModel.findOne({ _id: _id }, {
-                block_user: 0,
-                user_type: 0,
-                is_email_verify: 0,
-                is_number_verify: 0,
-                current_rank: 0,
                 is_super_admin: 0,
                 password: 0,
                 createdAt: 0,
@@ -335,7 +352,6 @@ class users {
             res.status(500).json({ success: false, message: "Internal server error", })
         }
     }
-
 }
 
 module.exports = new users();

@@ -15,10 +15,12 @@ router.post('/login',validationData.login, user_controller.login)
 router.post('/update-profile',validationData.update, user_controller.UpdateProfile)
 router.post('/referral-submit',validationData.submitReferral, user_controller.submitReferral)
 router.get('/team', user_controller.getTeam)
+router.get('/user-details', user_controller.getUserDetails)
 router.get('/wallet', wallet.getWallet)
 
 router.post('/get-news', getNewsAndBlog.getNews)
 router.post('/get-blogs', getNewsAndBlog.getBlogs)
+
 
 
 
