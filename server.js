@@ -28,6 +28,7 @@ app.use(expressValidator()); //middleware for validation
 
 global.globalPath=__dirname;
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../React-Admin-Panel-Bee/build')));
 app.use(function (req, res, next) { // Website you wish to allow to connect
     res.setHeader('Access-Control-Allow-Origin', '*'); // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS'); // Request headers you wish to allow
