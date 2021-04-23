@@ -45,6 +45,9 @@ app.use(function (req, res, next) { // Website you wish to allow to connect
 //   }
     
 app.use(cors());
+app.get('/', (req,res) => {
+    res.sendFile(path.join(__dirname, '../React-Admin-Panel-Bee/build/index.html'));
+  });
 
 app.use('/api/user', require('./app/routes/users'));
 app.use('/api/admin', require('./app/routes/admin'));
