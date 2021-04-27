@@ -14,6 +14,7 @@ class newsAndBlog {
         return {
             createNews: this.createNews.bind(this),
             createBlogs: this.createBlogs.bind(this),
+            uploadeImage: this.uploadeImage.bind(this)
           
 
             // submitReferral: this.submitReferral.bind(this)
@@ -66,6 +67,19 @@ class newsAndBlog {
         } catch (error) {
             console.log("Error in catch", error)
             res.status(500).json({ success: false, message: "Internal server error", })
+        }
+    }
+    async uploadeImage(req, res) {
+        try {
+            console.log("hiiiiiii", req.body, req.file)
+            if (req.file) {
+                res.json({ code: 200, success: true, message: 'uploade successfully', data: req.file })
+            } else {
+                res.json({ success: false, message: "Internal server error", })
+            }
+
+        } catch (error) {
+            res.json({ success: false, message: "Internal server error", })
         }
     }
  

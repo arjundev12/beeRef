@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-let uploadFile = require('../../middlewares/fileUploadHelper');
-let upload=uploadFile.uploadFileMethod('ProfileImage');
+const uploadFile = require('../../middlewares/fileUploadHelper');
+const upload=uploadFile.uploadFileMethod('NewsAndBlogs');
 // create login routes
 let getNewsAndBlog = require('../../controllers/common/Common');
 let createNewsAndBlog = require('../../controllers/admin/newsAndBlog');
@@ -13,6 +13,7 @@ router.post('/blogs',createNewsAndBlog.createBlogs)
 
 router.post('/get-news', getNewsAndBlog.getNews)
 router.post('/get-blogs', getNewsAndBlog.getBlogs)
+router.post('/upload-image',upload.single('image'), createNewsAndBlog.uploadeImage)
 
 
 module.exports = router;
