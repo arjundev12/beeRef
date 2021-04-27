@@ -13,43 +13,48 @@ class uploadImage{
         // }
         }
          uploadFileMethod(folderName){
-            this.folderName=folderName;
-             console.log(global.globalPath,"............",folderName)
-            let parant_path = 'public'
-            let child_path= `${parant_path}/${folderName}`;
-             if(!fs.existsSync(parant_path)){
-                fs.mkdirSync(parant_path);
-             }
-             if(!fs.existsSync(child_path)){
-                fs.mkdirSync(child_path);
-             }
-           let selt=this
-            let storage =multer.diskStorage({
-                destination: function (req, file, cb) {
-                              
-                cb(null, `./public/${selt.folderName}`)
-                 },
-                filename: function (req, file, cb) {
-                cb(null, file.fieldname + '-' + Date.now() + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1]);
+             try {
+                this.folderName=folderName;
+                console.log(global.globalPath,"............",folderName)
+               let parant_path = 'public'
+               let child_path= `${parant_path}/${folderName}`;
+                if(!fs.existsSync(parant_path)){
+                   fs.mkdirSync(parant_path);
                 }
-            })
-           return multer({
-            storage: storage,
-            limits: { fileSize: 1024 * 1024 * 201 },
-            fileFilter: function (req, file, cb) {
-              
-                if (file.mimetype == 'image/png' || file.mimetype == 'image/gif' || file.mimetype == 'application/svg' || file.mimetype == 'image/jpeg' || file.mimetype == 'video/quicktime' || file.mimetype=='video/avi' || file.mimetype=='video/x-flv' || file.mimetype=='video/mp4') {
-                    return cb(null, true);
-                } else {
-                    cb(JSON.stringify({
-                        code:500,
-                        success: false,
-                        message: 'Invalid file type. Only jpg, png , gif, jpeg, svg image  and quicktime, avi, flx, mp4 video files are allowed.'
-                    }), false)
+                if(!fs.existsSync(child_path)){
+                   fs.mkdirSync(child_path);
                 }
-            }
-            })
-     
+              let selt=this
+               let storage =multer.diskStorage({
+                   destination: function (req, file, cb) {
+                                 
+                   cb(null, `./public/${selt.folderName}`)
+                    },
+                   filename: function (req, file, cb) {
+                   cb(null, file.fieldname + '-' + Date.now() + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1]);
+                   }
+               })
+              return multer({
+               storage: storage,
+               limits: { fileSize: 1024 * 1024 * 201 },
+               fileFilter: function (req, file, cb) {
+                 
+                   if (file.mimetype == 'image/png' || file.mimetype == 'image/gif' || file.mimetype == 'application/svg' || file.mimetype == 'image/jpeg' || file.mimetype == 'video/quicktime' || file.mimetype=='video/avi' || file.mimetype=='video/x-flv' || file.mimetype=='video/mp4') {
+                       return cb(null, true);
+                   } else {
+                       cb(JSON.stringify({
+                           code:500,
+                           success: false,
+                           message: 'Invalid file type. Only jpg, png , gif, jpeg, svg image  and quicktime, avi, flx, mp4 video files are allowed.'
+                       }), false)
+                   }
+               }
+               })
+        
+             } catch (error) {
+                console.log("errrrrrrr",error) 
+             }
+           
         }
 
         //   imageresize(file, path, thumbnailimage, resizeimage){

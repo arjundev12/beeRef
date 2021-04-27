@@ -10,6 +10,10 @@ var blogsSchema = new Schema({
       type: String,
       default: ""
     },
+    image : {
+      type: String,
+      default: ""
+    },
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users"

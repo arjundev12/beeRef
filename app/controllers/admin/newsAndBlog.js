@@ -22,7 +22,7 @@ class newsAndBlog {
 
     async createNews(req, res) {
         try {
-            let { title, content, id} = req.body
+            let { title, content, id, image} = req.body
            console.log("hiiii", title, content, id)
             let getData = await NewsModel.findOne({ title: title })
 
@@ -32,7 +32,8 @@ class newsAndBlog {
                 let obj = {
                     title: title,
                     content: content,
-                    created_by: id
+                    created_by: id,
+                    image : image
                 }
                 let saveData = new NewsModel(obj)
                 await saveData.save();
@@ -47,11 +48,12 @@ class newsAndBlog {
    
     async createBlogs(req, res) {
         try {
-            let { title, content, id} = req.body
+            let { title, content, id, image} = req.body
             let obj = {
                 title: title,
                 content: content,
-                created_by: id
+                created_by: id,
+                image : image
             }
             let getData = await BlogModel.findOne({ title: title })
             if (getData) {

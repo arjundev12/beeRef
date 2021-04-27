@@ -12,8 +12,8 @@ var expressValidator = require('express-validator');
 const mongodb=require('./config/mongodb');
 // const io = require('./socket').listen(server);
 // XSS Security  
-var multer = require('multer');
-var upload = multer();
+// var multer = require('multer');
+// var upload = multer();
 
 
 app.use(helmet());
@@ -23,12 +23,13 @@ app.use(express.urlencoded({
     extended: true
 }));
 
-app.use(upload.array()); 
+// app.use(upload.array()); 
 app.use(expressValidator()); //middleware for validation
 
-global.globalPath=__dirname;
+global.globalPath =__dirname;
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, '../React-Admin-Panel-Bee/build')));
+// console.log("hiiiiii", path.join(__dirname, '../React-Admin-Panel-Bee/build'))
+// app.use(express.static(path.join(__dirname, '../React-Admin-Panel-Bee/build')));
 app.use(function (req, res, next) { // Website you wish to allow to connect
     res.setHeader('Access-Control-Allow-Origin', '*'); // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS'); // Request headers you wish to allow
@@ -45,9 +46,9 @@ app.use(function (req, res, next) { // Website you wish to allow to connect
 //   }
     
 app.use(cors());
-app.get('/', (req,res) => {
-    res.sendFile(path.join(__dirname, '../React-Admin-Panel-Bee/build/index.html'));
-  });
+// app.get('/', (req,res) => {
+//     res.sendFile(path.join(__dirname, '../React-Admin-Panel-Bee/build/index.html'));
+//   });
 
 app.use('/api/user', require('./app/routes/users'));
 app.use('/api/admin', require('./app/routes/admin'));
