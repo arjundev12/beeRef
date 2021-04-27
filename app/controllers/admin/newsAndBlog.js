@@ -32,7 +32,7 @@ class newsAndBlog {
                 let obj = {
                     title: title,
                     content: content,
-                    created_by: id,
+                    created_by: '607e5136b24182674c4a8ed6',
                     image : image
                 }
                 let saveData = new NewsModel(obj)
@@ -52,7 +52,7 @@ class newsAndBlog {
             let obj = {
                 title: title,
                 content: content,
-                created_by: id,
+                created_by: '607e5136b24182674c4a8ed6',
                 image : image
             }
             let getData = await BlogModel.findOne({ title: title })
