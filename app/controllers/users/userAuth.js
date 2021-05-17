@@ -375,8 +375,7 @@ class users {
                     arrayList.push(userData)
                 }
             }
-            let b = arrayList.splice(0,5);
-            data.team = b
+            data.team  = arrayList.length > 5 ? arrayList.splice(0,5): arrayList
             //////////////////get news///////////////////////
             let options = {
                 offset: req.body.offset || 0,
