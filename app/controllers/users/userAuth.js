@@ -1,6 +1,9 @@
 const config = require("../../../config/config")
 const commenFunction = require('../../middlewares/common')
+const NewsModel = require('../../models/news')
+const BlogModel = require("../../models/blogs")
 const UsersModel = require('../../models/users');
+const walletModel = require('../../models/wallet')
 const moment = require("moment");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
@@ -15,8 +18,8 @@ class users {
             uploadeImage: this.uploadeImage.bind(this),
             submitReferral: this.submitReferral.bind(this),
             getTeam: this.getTeam.bind(this),
-            getUserDetails: this.getUserDetails.bind(this)
-            // getNews: this.getNews.bind(this),
+            getUserDetails: this.getUserDetails.bind(this),
+            getDashboard: this.getDashboard.bind(this),
             // getBlogs: this.getBlogs.bind(this)
             // uploadeImage: this.uploadeImage.bind(this),
             // submitReferral: this.submitReferral.bind(this)
@@ -349,6 +352,46 @@ class users {
             }
             data.team = arrayList
             delete data.ref_to_users;
+            res.json({ code: 200, success: true, message: 'uploade successfully', data: data })
+        } catch (error) {
+            console.log("Error in catch", error)
+            res.json({ success: false, message: "Internal server error", })
+        }
+    }
+
+    async getDashboard(req, res) {
+        try {
+            let data = {}
+            let _id = req.query._id
+
+            ///////////////////get team//////////////
+            let team = await UsersModel.findOne({ _id: _id }, {ref_to_users: 1 }).lean()
+            let arrayList = [];
+            if (team.ref_to_users) {
+                for (let item of team.ref_to_users) {
+                    let userData = {}
+                    userData = await this._getUserData(item.id)
+                    userData.status = item.status
+                    arrayList.push(userData)
+                }
+            }
+            let b = arrayList.splice(0,5);
+            data.team = b
+            //////////////////get news///////////////////////
+            let options = {
+                offset: req.body.offset || 0,
+                limit: req.body.limit || 2,
+                sort: { createdAt: -1 },
+                lean: true,
+            }
+            let getNews = await NewsModel.paginate({}, options)
+            data.news= getNews.docs
+            //////////////////////////get blogs/////////////////////////
+            let getblogs = await BlogModel.paginate({}, options)
+            data.blogs = getblogs.docs
+           ////////////////////////////get wallet//////////////////////////
+            let wallte = await walletModel.findOne({ user_id: _id }).populate('user_id','name username email user_type ').lean()
+            data.wallet = wallte
             res.json({ code: 200, success: true, message: 'uploade successfully', data: data })
         } catch (error) {
             console.log("Error in catch", error)
