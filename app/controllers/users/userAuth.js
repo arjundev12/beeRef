@@ -20,9 +20,9 @@ class users {
             getTeam: this.getTeam.bind(this),
             getUserDetails: this.getUserDetails.bind(this),
             getDashboard: this.getDashboard.bind(this),
-            forgotPassword: this.forgotPassword.bind(this)
-            // uploadeImage: this.uploadeImage.bind(this),
-            // submitReferral: this.submitReferral.bind(this)
+            forgotPassword: this.forgotPassword.bind(this),
+            verifyForgot: this.verifyForgot.bind(this),
+            setForgotPass: this.setForgotPass.bind(this)
         }
     }
 
@@ -374,15 +374,15 @@ class users {
             let data
             let {email} = req.body
             if(!email){
-                res.json({ success: false, message: "email is required", })
+                res.json({ success: false, message: "Email is required", })
             }else{
                 data = await UsersModel.findOne({ email: email }).lean()
                 if(!data){
-                    res.json({ code: 404, success: false, message: 'email is not register', })
+                    res.json({ code: 404, success: false, message: 'Email is not register', })
                  }else{
                     let otp = await this.rendomOtp()
                     await commenFunction._sendMail(email, `This is your otp : ${otp}`, `Forgot Password `)
-                    let updateData = await UsersModel.findOneAndUpdate({ email: email },{$set: {forgot_otp: otp}},{new: true}).lean()
+                    let updateData = await UsersModel.findOneAndUpdate({ email: email },{$set: {forgot_otp: otp, forgot_otp_verify : false}},{new: true}).lean()
                   res.json({ code: 200, success: true, message: `Otp send successfull temp ${updateData.forgot_otp}`, data: updateData })
                      
                  }
@@ -396,21 +396,46 @@ class users {
     async verifyForgot(req, res) {
         try {
             let data
-            let {email} = req.body
-            if(!email){
-                res.json({ success: false, message: "email is required", })
-            }else{
+            let {email, otp} = req.body
                 data = await UsersModel.findOne({ email: email }).lean()
                 if(!data){
-                    res.json({ code: 404, success: false, message: 'email is not register', })
+                    res.json({ code: 404, success: false, message: 'Email is not register', })
                  }else{
-                    let otp = await this.rendomOtp()
-                    await commenFunction._sendMail(email ,`This is your otp : ${otp}`,'Forgot password')
-                    let updateData = await UsersModel.findOneAndUpdate({ email: email },{$set: {forgot_otp: otp}},{new: true}).lean()
-                  res.json({ code: 200, success: true, message: `Otp send successfull temp ${updateData.forgot_otp}`, data: updateData })
-                     
+                    if(data.forgot_otp == otp){
+                        data = await UsersModel.findOneAndUpdate({ email: email },{$set: {forgot_otp_verify: true}}).lean()
+                        res.json({ code: 200, success: true, message: `Otp verify successfully`, data: data })
+                    }else{
+                        res.json({ code: 404, success: false, message: 'You have enter wrong otp' })   
+                    }
                  }
-            }
+             
+        } catch (error) {
+            console.log("Error in catch", error)
+            res.json({ success: false, message: "Internal server error", })
+        }
+    }
+    async setForgotPass(req, res) {
+        try {
+            let data
+            let {email, newPassword} = req.body
+                data = await UsersModel.findOne({ email: email }).lean()
+                if(!data){
+                    res.json({ code: 404, success: false, message: 'Email is not register', })
+                 }else{
+                    if(data.forgot_otp_verify == true){
+                        const salt = bcrypt.genSaltSync(10);
+                        const hash = bcrypt.hashSync(newPassword, salt);
+                        data = await UsersModel.findOneAndUpdate({ email: email },{$set: {password: hash, forgot_otp_verify : false}}).lean()
+                        let stoken = {
+                            _id: data._id,
+                            email: data.email
+                        }
+                        data.token = await jwt.sign(stoken, authConfig.secret, { expiresIn: '7d' });
+                        res.json({ code: 200, success: true, message: `Password set successfully`, data: data })
+                    }else{
+                        res.json({ code: 404, success: false, message: 'Please verify your otp' })   
+                    }
+                 }
              
         } catch (error) {
             console.log("Error in catch", error)

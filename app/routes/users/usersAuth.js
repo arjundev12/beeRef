@@ -27,6 +27,10 @@ router.post('/get-blogs', getNewsAndBlog.getBlogs)
 router.put('/verify-otp', validationData.verifyOtp, user_controller.verifyOtp);
 router.post('/upload-image',upload.single('profile_image'), user_controller.uploadeImage)
 router.post('/forgot', user_controller.forgotPassword)
+router.post('/verify-email', validationData.verifyforgot,user_controller.verifyForgot)
+router.post('/set-password', validationData.setForgotPass,user_controller.setForgotPass)
+
+
 
 
 

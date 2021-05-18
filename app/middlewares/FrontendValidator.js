@@ -10,7 +10,9 @@ class FrontEntValidator {
             verifyOtp: this.verifyOtp.bind(this),
             login: this.login.bind(this),
             update: this.update.bind(this),
-            submitReferral: this.submitReferral.bind(this)
+            submitReferral: this.submitReferral.bind(this),
+            verifyforgot: this.verifyforgot.bind(this),
+            setForgotPass: this.setForgotPass.bind(this)
         }
     }
     async _validationErrorsFormat(req) {
@@ -117,6 +119,80 @@ class FrontEntValidator {
                             errorMessage: { "field_name": "otp", "error_msg": 'Otp should contain minimum 4 number' },
                         },
                         errorMessage: { "field_name": "otp", "error_msg": 'Otp is required' },
+                    },
+                    
+                })
+
+           
+
+            const errors = await this._validationErrorsFormat(req);
+            if (errors) {
+                // return res.json({ code : 422 ,success: false, message: errors[0] });
+                return res.status(422).json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
+            } else {
+                return next();
+            }
+        } else {
+            res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
+        }
+    }
+    async verifyforgot (req, res, next) {
+        // return next();
+        if (Object.keys(req.body).length <=2) {
+                req.checkBody({
+                    email: {
+                        notEmpty: true,
+                        // matches: {
+                        //     // more than one options must be passed as arrays
+                        //     options: /^[0-9]{6,10}$/i,
+                        //     // errorMessage: 'Mobile number should contain minimum 10 number'
+                        //     errorMessage: { "field_name": "number", "error_msg": 'Mobile number should contain minimum 6 number' },
+                        // },
+                        errorMessage: { "field_name": "email", "error_msg": 'Email is required' },
+                    },
+                    otp: {
+                        notEmpty: true,
+                        matches: {
+                            // more than one options must be passed as arrays
+                            options: /^[0-9]{4,4}$/i,
+                            // errorMessage: 'Mobile number should contain minimum 10 number'
+                            errorMessage: { "field_name": "otp", "error_msg": 'Otp should contain minimum 4 number' },
+                        },
+                        errorMessage: { "field_name": "otp", "error_msg": 'Otp is required' },
+                    },
+                    
+                })
+
+           
+
+            const errors = await this._validationErrorsFormat(req);
+            if (errors) {
+                // return res.json({ code : 422 ,success: false, message: errors[0] });
+                return res.status(422).json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
+            } else {
+                return next();
+            }
+        } else {
+            res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
+        }
+    }
+    async setForgotPass (req, res, next) {
+        // return next();
+        if (Object.keys(req.body).length <=2) {
+                req.checkBody({
+                    email: {
+                        notEmpty: true,
+                        // matches: {
+                        //     // more than one options must be passed as arrays
+                        //     options: /^[0-9]{6,10}$/i,
+                        //     // errorMessage: 'Mobile number should contain minimum 10 number'
+                        //     errorMessage: { "field_name": "number", "error_msg": 'Mobile number should contain minimum 6 number' },
+                        // },
+                        errorMessage: { "field_name": "email", "error_msg": 'Email is required' },
+                    },
+                    newPassword: {
+                        notEmpty: true,
+                        errorMessage: { "field_name": "newPassword", "error_msg": 'newPassword is required' },
                     },
                     
                 })

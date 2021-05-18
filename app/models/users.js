@@ -85,6 +85,10 @@ var UsersSchema = new Schema({
     type: String,
     trim: true,
   },
+  forgot_otp_verify: {
+    type: Boolean,
+    default:false
+  },
   // {
   //   status:
   //   _id
