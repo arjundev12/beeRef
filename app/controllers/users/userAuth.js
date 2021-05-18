@@ -381,7 +381,7 @@ class users {
                     res.json({ code: 404, success: false, message: 'email is not register', })
                  }else{
                     let otp = await this.rendomOtp()
-                    await commenFunction._sendMail(email, `Forgot Password `, `This is your otp : ${otp}`)
+                    await commenFunction._sendMail(email, `This is your otp : ${otp}`, `Forgot Password `)
                     let updateData = await UsersModel.findOneAndUpdate({ email: email },{$set: {forgot_otp: otp}},{new: true}).lean()
                   res.json({ code: 200, success: true, message: `Otp send successfull temp ${updateData.forgot_otp}`, data: updateData })
                      
