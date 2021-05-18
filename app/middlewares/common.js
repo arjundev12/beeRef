@@ -32,9 +32,9 @@ class Common {
             const msg = {
                 to: toMail, // Change to your recipient
                 from: constant.fromMail, // Change to your verified sender
-                subject: subject,
-                text: text,
-                html: '<strong>and easy to do anywhere1111, even with Node.js</strong>',
+                subject: text,
+                // text: text,
+                html: `<strong>${subject}</strong>`,
             }
 
             let sendMail = await sgMail.send(msg)

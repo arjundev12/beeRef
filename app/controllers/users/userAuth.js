@@ -393,7 +393,30 @@ class users {
             res.json({ success: false, message: "Internal server error", })
         }
     }
-
+    async verifyForgot(req, res) {
+        try {
+            let data
+            let {email} = req.body
+            if(!email){
+                res.json({ success: false, message: "email is required", })
+            }else{
+                data = await UsersModel.findOne({ email: email }).lean()
+                if(!data){
+                    res.json({ code: 404, success: false, message: 'email is not register', })
+                 }else{
+                    let otp = await this.rendomOtp()
+                    await commenFunction._sendMail(email ,`This is your otp : ${otp}`,'Forgot password')
+                    let updateData = await UsersModel.findOneAndUpdate({ email: email },{$set: {forgot_otp: otp}},{new: true}).lean()
+                  res.json({ code: 200, success: true, message: `Otp send successfull temp ${updateData.forgot_otp}`, data: updateData })
+                     
+                 }
+            }
+             
+        } catch (error) {
+            console.log("Error in catch", error)
+            res.json({ success: false, message: "Internal server error", })
+        }
+    }
     async getDashboard(req, res) {
         try {
             let data = {}
