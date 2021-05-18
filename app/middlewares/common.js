@@ -3,6 +3,11 @@
 const utilities = require('util');
 const config = require('../../config/config')
 const walletModel = require('../models/wallet')
+const sgMail = require('@sendgrid/mail')
+const constant = require('../utilities/constants')
+console.log("api key1111", process.env.SENDGRID_API_KEY1, constant.SENDGRID_API_KEY1)
+sgMail.setApiKey(constant.SENDGRID_API_KEY1)
+
 var jwt = require('jsonwebtoken');
 var verifyOptions = {
     issuer: config.i,
@@ -19,9 +24,26 @@ class Common {
             jwtDecode: this.jwtDecode.bind(this),
             emailsenderdyanmic: this.emailsenderdyanmic.bind(this),
             _createWallet: this._createWallet.bind(this),
+            _sendMail : this._sendMail.bind(this)
         }
     }
-    
+    async _sendMail(toMail, text = constant.defaultMsg, subject = constant.defaultSub) {
+        try {
+            const msg = {
+                to: toMail, // Change to your recipient
+                from: constant.fromMail, // Change to your verified sender
+                subject: subject,
+                text: text,
+                html: '<strong>and easy to do anywhere1111, even with Node.js</strong>',
+            }
+
+            let sendMail = await sgMail.send(msg)
+            console.log("sendMail", sendMail)
+        } catch (error) {
+            console.error("error in _sendMail", error)
+        }
+        return true
+    }
     async jwtDecode(token) {
         try {
             let tokeData = await jwt.verify(token, config.superSecret)

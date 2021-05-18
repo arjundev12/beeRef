@@ -20,7 +20,7 @@ class users {
             getTeam: this.getTeam.bind(this),
             getUserDetails: this.getUserDetails.bind(this),
             getDashboard: this.getDashboard.bind(this),
-            // getBlogs: this.getBlogs.bind(this)
+            forgotPassword: this.forgotPassword.bind(this)
             // uploadeImage: this.uploadeImage.bind(this),
             // submitReferral: this.submitReferral.bind(this)
         }
@@ -43,6 +43,17 @@ class users {
             while (flage);
 
             return '@' + fourDigitsRandom
+
+        } catch (error) {
+            throw error
+        }
+
+    }
+    async rendomOtp() {
+        try {
+            let fourDigitsRandom
+            fourDigitsRandom = await Math.floor(1000 + Math.random() * 9000);
+            return fourDigitsRandom
 
         } catch (error) {
             throw error
@@ -353,6 +364,30 @@ class users {
             data.team = arrayList
             delete data.ref_to_users;
             res.json({ code: 200, success: true, message: 'uploade successfully', data: data })
+        } catch (error) {
+            console.log("Error in catch", error)
+            res.json({ success: false, message: "Internal server error", })
+        }
+    }
+    async forgotPassword(req, res) {
+        try {
+            let data
+            let {email} = req.body
+            if(!email){
+                res.json({ success: false, message: "email is required", })
+            }else{
+                data = await UsersModel.findOne({ email: email }).lean()
+                if(!data){
+                    res.json({ code: 404, success: false, message: 'email is not register', })
+                 }else{
+                    let otp = await this.rendomOtp()
+                    await commenFunction._sendMail(email, `Forgot Password `, `This is your otp : ${otp}`)
+                    let updateData = await UsersModel.findOneAndUpdate({ email: email },{$set: {forgot_otp: otp}},{new: true}).lean()
+                  res.json({ code: 200, success: true, message: `Otp send successfull temp ${updateData.otp}`, data: updateData })
+                     
+                 }
+            }
+             
         } catch (error) {
             console.log("Error in catch", error)
             res.json({ success: false, message: "Internal server error", })
