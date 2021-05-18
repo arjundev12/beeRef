@@ -383,7 +383,7 @@ class users {
                     let otp = await this.rendomOtp()
                     await commenFunction._sendMail(email, `Forgot Password `, `This is your otp : ${otp}`)
                     let updateData = await UsersModel.findOneAndUpdate({ email: email },{$set: {forgot_otp: otp}},{new: true}).lean()
-                  res.json({ code: 200, success: true, message: `Otp send successfull temp ${updateData.otp}`, data: updateData })
+                  res.json({ code: 200, success: true, message: `Otp send successfull temp ${updateData.forgot_otp}`, data: updateData })
                      
                  }
             }
