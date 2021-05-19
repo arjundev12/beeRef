@@ -100,6 +100,19 @@ var UsersSchema = new Schema({
     type: Boolean,
     default:false
   },
+  last_mining_time:{
+    type: String,
+    trim: true,
+    default:"0"
+  },
+  submit_referral:{
+    type: Boolean,
+    default:false
+  },
+  from_referral_id:{
+    type: String,
+    trim: true
+  },
   profile_details: {
     type: { any: [Schema.Types.Mixed] }
   }

@@ -6,24 +6,30 @@ var walletSchema = new Schema({
         type: String
     },
     total_amount: {
-        type: String,
-        default: "0",
-        trim: true
+        type: Number,
+        default: 0,
     },
     Currency_type: {
         type: String,
         default: "rs",
         trim: true
     },
-    referral_ammount: {
+    coin_type: {
         type: String,
-        default: "0",
+        default: "bee",
         trim: true
     },
+    referral_ammount: {
+        type: Number,
+        default: 0,
+    },
     earning_ammount: {
-        type: String,
-        default: "0",
-        trim: true
+        type: Number,
+        default: 0,
+    },
+    mining_ammount: {
+        type: Number,
+        default: 0,
     },
     wallet_type: {
         type: String,

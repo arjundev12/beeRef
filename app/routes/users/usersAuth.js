@@ -13,7 +13,6 @@ const validationData= require('../../middlewares/FrontendValidator');
 router.post('/sign-up',validationData.signUp,  user_controller.signUp);
 router.post('/login',validationData.login, user_controller.login)
 router.post('/update-profile',validationData.update, user_controller.UpdateProfile)
-router.post('/referral-submit',validationData.submitReferral, user_controller.submitReferral)
 router.get('/team', user_controller.getTeam)
 router.get('/user-details', user_controller.getUserDetails)
 router.get('/wallet', wallet.getWallet)
@@ -25,10 +24,13 @@ router.post('/get-blogs', getNewsAndBlog.getBlogs)
 
 
 router.put('/verify-otp', validationData.verifyOtp, user_controller.verifyOtp);
-router.post('/upload-image',upload.single('profile_image'), user_controller.uploadeImage)
+router.post('/upload-image', user_controller.uploadeImage)
 router.post('/forgot', user_controller.forgotPassword)
 router.post('/verify-email', validationData.verifyforgot,user_controller.verifyForgot)
 router.post('/set-password', validationData.setForgotPass,user_controller.setForgotPass)
+router.post('/referral-submit',validationData.submitReferral, user_controller.submitReferral)
+router.put('/minner-update',user_controller.minnerActivity)
+
 
 
 

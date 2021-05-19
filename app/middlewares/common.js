@@ -7,7 +7,7 @@ const sgMail = require('@sendgrid/mail')
 const constant = require('../utilities/constants')
 console.log("api key1111", process.env.SENDGRID_API_KEY1, constant.SENDGRID_API_KEY1)
 sgMail.setApiKey(constant.SENDGRID_API_KEY1)
-
+const base64Img = require('base64-img')
 var jwt = require('jsonwebtoken');
 var verifyOptions = {
     issuer: config.i,
@@ -17,6 +17,8 @@ var verifyOptions = {
     algorithm: config.algorithm
 };
 const nodemailer = require('nodemailer');
+const fs = require('fs');
+const transactionModel = require('../models/transactions');
 
 class Common {
     constructor() {
@@ -24,7 +26,9 @@ class Common {
             jwtDecode: this.jwtDecode.bind(this),
             emailsenderdyanmic: this.emailsenderdyanmic.bind(this),
             _createWallet: this._createWallet.bind(this),
-            _sendMail : this._sendMail.bind(this)
+            _sendMail: this._sendMail.bind(this),
+            _uploadBase64Profile: this._uploadBase64Profile.bind(this),
+            _createHistory: this._createHistory.bind(this)
         }
     }
     async _sendMail(toMail, text = constant.defaultMsg, subject = constant.defaultSub) {
@@ -55,47 +59,47 @@ class Common {
         }
 
     }
-   
+
 
     async emailsenderdyanmic(data) {
-      if (data.from && Array.isArray(data.to) && data.password && data.subject && data.text) {
-          var transporter = nodemailer.createTransport({
-              service: 'gmail',
-              auth: {
-                  user: data.from,
-                  pass: data.password
-              },
-              port: 587,
-              host: 'smtp.gmail.com',
-              // tls: {
-              //   rejectUnauthorized: false
-              // }
-          });
-         
-          try{
-            var info = await transporter.sendMail({
-              from: data.from,
-              to: data.to,
-              subject: data.subject,
-              text: data.text
+        if (data.from && Array.isArray(data.to) && data.password && data.subject && data.text) {
+            var transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: data.from,
+                    pass: data.password
+                },
+                port: 587,
+                host: 'smtp.gmail.com',
+                // tls: {
+                //   rejectUnauthorized: false
+                // }
             });
-            console.log('Data email', info);
-            return "Mail send";
-          }catch(err){
-            console.log('Error while sending mail', err);
-            return "please check email or password or please turn on less secure app access";
-          }
-      }
-      else {
-          return "please send proper parameter to the function";
-      }
+
+            try {
+                var info = await transporter.sendMail({
+                    from: data.from,
+                    to: data.to,
+                    subject: data.subject,
+                    text: data.text
+                });
+                console.log('Data email', info);
+                return "Mail send";
+            } catch (err) {
+                console.log('Error while sending mail', err);
+                return "please check email or password or please turn on less secure app access";
+            }
+        }
+        else {
+            return "please send proper parameter to the function";
+        }
     }
-    async _createWallet(id , type) {
+    async _createWallet(id, type) {
         try {
             let saveData1 = {}
-             saveData1.wallet_type = type;
-             saveData1.user_id= id
-             saveData1.status = 'active'
+            saveData1.wallet_type = type;
+            saveData1.user_id = id
+            saveData1.status = 'active'
 
             let saveData = new walletModel(saveData1)
             await saveData.save();
@@ -106,7 +110,49 @@ class Common {
         return true
 
     }
-  
+
+    async _uploadBase64Profile(base64, child_path) {
+        try {
+            let parant_path = 'public'
+            let storagePath = `${parant_path}/${child_path}`;
+            if (!fs.existsSync(parant_path)) {
+                fs.mkdirSync(parant_path);
+            }
+            if (!fs.existsSync(storagePath)) {
+                fs.mkdirSync(storagePath);
+            }
+            console.log(global.globalPath, "............", 'driver', storagePath)
+            let filename = `${Date.now()}_image`
+            //  let base64Image = await this._validateBase64(base64)
+            let filepath = await base64Img.imgSync(`data:image/jpeg;base64,${base64}`, storagePath, filename);
+            console.log("filepath", filepath)
+            return filepath
+        } catch (error) {
+            console.error("error in _createWallet", error)
+        }
+    }
+    async _createHistory(toId =null, fromId=null, amount, type, transactionType) {
+        try {
+            let saveData = {
+                transaction_type: transactionType,
+                type: type,
+            }
+            if(fromId){
+                saveData.from_id = fromId
+            }if(toId){
+                saveData.to_id = toId
+            }
+            if(amount){
+                saveData.amount= amount
+            }
+          let saveData1=  new transactionModel(saveData)
+          await saveData1.save()
+          return
+        } catch (error) {
+            console.error("error in _createWallet", error)
+        }
+    }
+
 }
 
 module.exports = new Common();
