@@ -49,7 +49,7 @@ class adminAuth {
                 limit: req.body.limit || 10,
                 sort: { createdAt: -1 },
                 lean: true,
-                select: 'name user_type minner_Activity createdAt',
+                // select: 'name user_type minner_Activity createdAt',
             }
             let query = {
                 user_type: 'user'

@@ -13,6 +13,11 @@ var UsersSchema = new Schema({
     unique: true ,
     require: true
   },
+  reddit_username: {
+    type: String,
+    trim: true,
+    default:""
+  },
   email: {
     type: String,
     trim: true,

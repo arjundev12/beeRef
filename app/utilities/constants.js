@@ -11,6 +11,8 @@
     referral_ammount: 50,
     earning_ammount: 0.1,  // 5 % amount of mining_ammount
     mining_ammount: 2, 
+    number_reward: 2,
+    reddit_reward: 2, 
     recieve :"recieve",
     send :"send",
     mining: "mining",

@@ -12,7 +12,10 @@ class FrontEntValidator {
             update: this.update.bind(this),
             submitReferral: this.submitReferral.bind(this),
             verifyforgot: this.verifyforgot.bind(this),
-            setForgotPass: this.setForgotPass.bind(this)
+            setForgotPass: this.setForgotPass.bind(this),
+            chekUserName: this.chekUserName.bind(this),
+            chekRedditUserName: this.chekRedditUserName.bind(this),
+            resetPassword: this.resetPassword.bind(this)
         }
     }
     async _validationErrorsFormat(req) {
@@ -302,6 +305,83 @@ class FrontEntValidator {
             res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
         }
     }
+    ///////////////////////////////////////////////////////////
+    async chekUserName (req, res, next) {
+        // return next();
+        if (Object.keys(req.body).length <=2) {
+                req.checkBody({
+                    username: {
+                        notEmpty: true,
+                        errorMessage: { "field_name": "username", "error_msg": 'username is required' },
+                    }
+                    
+                })
+            const errors = await this._validationErrorsFormat(req);
+            if (errors) {
+                // return res.json({ code : 422 ,success: false, message: errors[0] });
+                return res.status(422).json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
+            } else {
+                return next();
+            }
+        } else {
+            res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
+        }
+    }
+    async chekRedditUserName (req, res, next) {
+        // return next();
+        if (Object.keys(req.body).length <=2) {
+                req.checkBody({
+                    reddit_username: {
+                        notEmpty: true,
+                        errorMessage: { "field_name": "reddit_username", "error_msg": 'reddit_username is required' },
+                    }
+                    
+                })
+            const errors = await this._validationErrorsFormat(req);
+            if (errors) {
+                // return res.json({ code : 422 ,success: false, message: errors[0] });
+                return res.status(422).json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
+            } else {
+                return next();
+            }
+        } else {
+            res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
+        }
+    }
+
+    async resetPassword (req, res, next) {
+        // return next();
+        if (Object.keys(req.body).length <=3) {
+                req.checkBody({
+                    oldPassword: {
+                        notEmpty: true,
+                        errorMessage: { "field_name": "oldPassword", "error_msg": 'oldPassword is required' },
+                    },
+                    newPassword: {
+                        notEmpty: true,
+                        errorMessage: { "field_name": "newPassword", "error_msg": 'newPassword is required' },
+                    },
+                    _id: {
+                        notEmpty: true,
+                        errorMessage: { "field_name": "_id", "error_msg": '_id is required' },
+                    }
+
+                    
+                })
+            const errors = await this._validationErrorsFormat(req);
+            if (errors) {
+                // return res.json({ code : 422 ,success: false, message: errors[0] });
+                return res.status(422).json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
+            } else {
+                return next();
+            }
+        } else {
+            res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
+        }
+    }
+
+
+    
 }
 
 module.exports = new FrontEntValidator();

@@ -128,7 +128,7 @@ class Common {
             console.log("filepath", filepath)
             return filepath
         } catch (error) {
-            console.error("error in _createWallet", error)
+            console.error("error in _uploadBase64Profile", error)
         }
     }
     async _createHistory(toId =null, fromId=null, amount, type, transactionType) {

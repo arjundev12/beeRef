@@ -24,7 +24,10 @@ class users {
             verifyForgot: this.verifyForgot.bind(this),
             setForgotPass: this.setForgotPass.bind(this),
             submitReferral: this.submitReferral.bind(this),
-            minnerActivity: this.minnerActivity.bind(this)
+            minnerActivity: this.minnerActivity.bind(this),
+            chekUserName: this.chekUserName.bind(this),
+            chekRedditUserName: this.chekRedditUserName.bind(this),
+            resetPassword: this.resetPassword.bind(this)
         }
     }
 
@@ -205,7 +208,7 @@ class users {
     }
     async UpdateProfile(req, res) {
         try {
-            let { _id, name, email, username, number, profile_pic, login_type, country } = req.body
+            let { _id, name, email, username, number, profile_pic, login_type, country, reddit_username } = req.body
             console.log("getUser", name, email, username, number, profile_pic, login_type, country)
             let array = [{ _id: _id }, { login_type: login_type }]
             let query = { $and: array }
@@ -225,6 +228,9 @@ class users {
                     updateData.username = username
                 }
                 if (number) {
+                    if(getUser.number == ""){
+                           this._addNumberReward(getUser._id)
+                    }
                     updateData.number = number
                 }
                 if (country) {
@@ -233,7 +239,12 @@ class users {
                 if (profile_pic) {
                     updateData.profile_pic = profile_pic
                 }
-
+                if (reddit_username) {
+                    if(getUser.reddit_username == ""){
+                        this._addRedditReward(getUser._id)
+                     }
+                    updateData.reddit_username = reddit_username
+                }
                 let updateUser = await UsersModel.findOneAndUpdate(query, { $set: updateData }, { new: true })
                 res.json({ code: 200, success: true, message: 'profile update successfully', data: updateUser })
             } else {
@@ -275,15 +286,15 @@ class users {
                 is_super_admin: 0,
                 number: 0
             }).lean()
-            let dt = moment().format("DD.MM.YYYY HH.mm.ss");
-            let endDate = moment(dt, "DD.MM.YYYY HH.mm.ss");
-            let startDate = moment(data.last_mining_time, "DD.MM.YYYY HH.mm.ss");
+            // let dt = moment().format("DD.MM.YYYY HH.mm.ss");
+            // let endDate = moment(dt, "DD.MM.YYYY HH.mm.ss");
+            // let startDate = moment(data.last_mining_time, "DD.MM.YYYY HH.mm.ss");
 
-            if (Number(endDate.diff(startDate, 'hours')) < 24) {
-                data.active_miner = "0" 
-            }else{
-               data.active_miner = "1" 
-            }
+            // if (Number(endDate.diff(startDate, 'hours')) < 24) {
+            //     data.active_miner = "0"
+            // } else {
+            //     data.active_miner = "1"
+            // }
             return data
         } catch (error) {
             console.log("Error in catch", error)
@@ -320,6 +331,15 @@ class users {
                 createdAt: 0,
                 __v: 0
             }).lean()
+            // let dt = moment().format("DD.MM.YYYY HH.mm.ss");
+            // let endDate = moment(dt, "DD.MM.YYYY HH.mm.ss");
+            // let startDate = moment(data.last_mining_time, "DD.MM.YYYY HH.mm.ss");
+
+            // if (Number(endDate.diff(startDate, 'hours')) < 24) {
+            //     data.active_miner = "0"
+            // } else {
+            //     data.active_miner = "1"
+            // }
             let arrayList = [];
             if (data.ref_to_users) {
                 for (let item of data.ref_to_users) {
@@ -329,9 +349,10 @@ class users {
                     arrayList.push(userData)
                 }
             }
+
             data.team = arrayList
             delete data.ref_to_users;
-            res.json({ code: 200, success: true, message: 'uploade successfully', data: data })
+            res.json({ code: 200, success: true, message: 'get successfully', data: data })
         } catch (error) {
             console.log("Error in catch", error)
             res.json({ success: false, message: "Internal server error", })
@@ -442,15 +463,7 @@ class users {
             ////////////////////////////get wallet//////////////////////////
             let wallte = await walletModel.findOne({ user_id: _id }).populate('user_id', 'name username email user_type ').lean()
             data.wallet = wallte
-
-            let dt = moment().format("DD.MM.YYYY HH.mm.ss");
-            let endDate = moment(dt, "DD.MM.YYYY HH.mm.ss");
-            let startDate = moment(team.last_mining_time, "DD.MM.YYYY HH.mm.ss");
-
-            if (Number(endDate.diff(startDate, 'hours')) < 24) {
-                await this._deactivateMiner(_id)
-            }
-            
+           
             res.json({ code: 200, success: true, message: 'uploade successfully', data: data })
         } catch (error) {
             console.log("Error in catch", error)
@@ -499,11 +512,10 @@ class users {
                 if (data) {
                     await UsersModel.findOneAndUpdate({ username: username },
                         {
-                            minner_Activity: true,
                             from_referral_id: data._id,
-                            last_mining_time: moment().format("DD.MM.YYYY HH.mm.ss")
                         }
                     ).lean()
+                     await this._activateMiner(getUser._id )
                     await walletModel.findOneAndUpdate({ user_id: getUser._id }, {
                         $inc: {
                             referral_ammount: Constants.referral_ammount,
@@ -526,18 +538,21 @@ class users {
         try {
             let { _id, status } = req.body
             let data
-            console.log("req.body", req.body)
+           
+            // console.log("req.body", req.body)
             data = await UsersModel.findOne({ _id: _id })
-            console.log(data)
-            let dt = moment().format("DD.MM.YYYY HH.mm.ss");
-            let endDate = moment(dt, "DD.MM.YYYY HH.mm.ss");
-            let startDate = moment(data.last_mining_time, "DD.MM.YYYY HH.mm.ss");
-
-            if (Number(endDate.diff(startDate, 'hours')) < 24) {
+            // console.log(data)
+            // let dt = moment().format("DD.MM.YYYY HH.mm.ss");
+            // let endDate = moment(dt, "DD.MM.YYYY HH.mm.ss");
+            // let startDate = moment(data.last_mining_time, "DD.MM.YYYY HH.mm.ss");
+            // Number(endDate.diff(startDate, 'hours')) < 24
+            
+            if (data.minner_Activity) {
                 res.json({ code: 400, success: false, message: 'You have not click before 24 hour', })
-            }else{                
+            } else {
                 if (status == true || status == 'true') {
                     await this._activateMiner(_id)
+                   
                     await walletModel.findOneAndUpdate({ user_id: _id }, {
                         $inc: {
                             mining_ammount: Constants.mining_ammount,
@@ -556,43 +571,137 @@ class users {
                 } else {
 
                     res.json({ code: 200, success: true, message: 'Status update successfully', })
-    
+
                 }
-    
+
             }
-           
-           
+
+
         } catch (error) {
             console.log("Error in catch", error)
             res.json({ success: false, message: "Internal server error", })
         }
     }
-  async _deactivateMiner(_id){
-      try {
-        await UsersModel.findOneAndUpdate({ _id: _id }, {
-            $set: {
-                minner_Activity: false,
-            }
-        }, { new: true })
-      } catch (error) {
-        console.log("error in catch _deactivateMiner", error)
-      }
-       
+    async _deactivateMiner(_id) {
+        try {
+            await UsersModel.findOneAndUpdate({ _id: _id }, {
+                $set: {
+                    minner_Activity: false,
+                }
+            }, { new: true })
+        } catch (error) {
+            console.log("error in catch _deactivateMiner", error)
+        }
+
     }
-   async _activateMiner(_id){
-       try {
-        await UsersModel.findOneAndUpdate({ _id: _id }, {
-            $set: {
-                minner_Activity: true,
-                last_mining_time: moment().format("DD.MM.YYYY HH.mm.ss")
-            }
-        }, { new: true }) 
-       } catch (error) {
-           console.log("error in catch _activateMiner", error)
-       }
-       return
-       
+    async _activateMiner(_id) {
+        try {
+            await UsersModel.findOneAndUpdate({ _id: _id }, {
+                $set: {
+                    minner_Activity: true,
+                    last_mining_time: moment().format("DD.MM.YYYY HH.mm.ss")
+                }
+            }, { new: true })
+            const minner = {
+                _id: _id,
+                _DeactivateMiner() {
+                  setTimeout(() => { 
+                        console.log(`Rover says ${this._id}!`);
+                         UsersModel.findOneAndUpdate({ _id: this._id }, {
+                            $set: {
+                                minner_Activity: false,
+                            }
+                        }, { new: true }).then(data=> console.log("successfull")).catch(err=> console.log("err", err))
+                     }, 1000*60*5
+                  );
+                }
+              }
+              
+              minner._DeactivateMiner();
+        } catch (error) {
+            console.log("error in catch _activateMiner", error)
+        }
+        return
+
     }
+    async chekUserName(req, res) {
+        try {
+            let getUser = await UsersModel.findOne({ username: req.body.username }).lean()
+            if (getUser) {
+                res.json({ code: 400, success: false, message: 'Username is not available', data: getUser.username })
+            } else {
+                res.json({ code: 200, success: true, message: 'User name is available', data: req.body.username })
+            }
+        } catch (error) {
+            console.log("Error in catch chekUserName", error)
+            res.json({ success: false, message: "Internal server error", })
+        }
+    }
+    // redit_user_name
+    async chekRedditUserName(req, res) {
+        try {
+            let getUser = await UsersModel.findOne({ reddit_username: req.body.reddit_username }).lean()
+            if (getUser) {
+                res.json({ code: 400, success: false, message: 'Reddit username is not available', data: getUser.reddit_username })
+            } else {
+                res.json({ code: 200, success: true, message: 'Reddit username is available', data: req.body.reddit_username })
+            }
+        } catch (error) {
+            console.log("Error in catch chekUserName", error)
+            res.json({ success: false, message: "Internal server error", })
+        }
+    }
+    async resetPassword(req, res) {
+        try {
+            let { oldPassword, newPassword, _id } = req.body
+            let getUser = await UsersModel.findOne({ _id: _id }).lean()
+            if (getUser) {
+
+                let verifypass = await bcrypt.compareSync(oldPassword, getUser.password);
+                if (verifypass) {
+                    let update = await UsersModel.findOneAndUpdate({ _id: _id }, { $set: { password: newPassword }},{new: true} )
+                    res.json({ code: 200, success: true, message: 'Password update successfully', data: update })
+                }else{
+                    res.json({ code: 400, success: true, message: 'Old password is invalid', data: getUser }) 
+                }
+               
+            } else {
+                res.json({ code: 400, success: false, message: 'user is not available', })
+            }
+        } catch (error) {
+            console.log("Error in catch chekUserName", error)
+            res.json({ success: false, message: "Internal server error", })
+        }
+    }
+   async _addNumberReward(_id){
+        try {
+            await walletModel.findOneAndUpdate({ user_id: _id }, {
+                $inc: {
+                    earning_ammount: Constants.number_reward,
+                    total_amount: Constants.number_reward
+                }
+            }).lean()
+            commenFunction._createHistory(_id, null, Constants.number_reward, Constants.recieve, Constants.earning)
+        } catch (error) {
+            console.log("error in catch _addNumberReward", error)
+        }
+        return
+    }
+    async _addRedditReward(_id){
+        try {
+            await walletModel.findOneAndUpdate({ user_id: _id }, {
+                $inc: {
+                    earning_ammount: Constants.reddit_reward,
+                    total_amount: Constants.reddit_reward
+                }
+            }).lean()
+            commenFunction._createHistory(_id, null, Constants.reddit_reward, Constants.recieve, Constants.earning)
+        } catch (error) {
+            console.log("error in catch _addRedditReward", error)
+        }
+        return
+    }
+
 }
 
 module.exports = new users();

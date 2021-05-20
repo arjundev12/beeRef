@@ -31,6 +31,12 @@ router.post('/set-password', validationData.setForgotPass,user_controller.setFor
 router.post('/referral-submit',validationData.submitReferral, user_controller.submitReferral)
 router.put('/minner-update',user_controller.minnerActivity)
 
+router.post('/check-username',validationData.chekUserName, user_controller.chekUserName)
+router.post('/check-reddit-username',validationData.chekRedditUserName, user_controller.chekRedditUserName)
+router.post('/reset-password',validationData.resetPassword, user_controller.resetPassword)
+
+
+
 
 
 
