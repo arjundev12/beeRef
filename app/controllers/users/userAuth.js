@@ -184,7 +184,7 @@ class users {
         try {
             let { email, password } = req.body
             let getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: 'manual' }, { user_type: 'user' }] },
-                { username: 1, email: 1, Referral_id: 1, password: 1, login_type: 1 }).lean()
+                { username: 1, email: 1, Referral_id: 1, password: 1, login_type: 1 ,profile_pic:1,name:1}).lean()
             console.log("getUser", getUser)
             if (getUser) {
                 let verifypass = await bcrypt.compareSync(password, getUser.password);
@@ -208,7 +208,7 @@ class users {
     }
     async UpdateProfile(req, res) {
         try {
-            let { _id, name, email, username, number, profile_pic, login_type, country, reddit_username } = req.body
+            let { _id, name, email, username, number, profile_pic, login_type, country, reddit_username, minner_Activity } = req.body
             console.log("getUser", name, email, username, number, profile_pic, login_type, country)
             let array = [{ _id: _id }, { login_type: login_type }]
             let query = { $and: array }
@@ -239,6 +239,11 @@ class users {
                 if (profile_pic) {
                     updateData.profile_pic = profile_pic
                 }
+                if (minner_Activity) {
+                    // updateData.minner_Activity = minner_Activity
+                    this._activateMiner(_id)
+                }
+                
                 if (reddit_username) {
                     if(getUser.reddit_username == ""){
                         this._addRedditReward(getUser._id)
