@@ -29,7 +29,9 @@ app.use(upload.array());
 app.use(expressValidator()); //middleware for validation
 
 global.globalPath =__dirname;
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
+app.use( express.static(path.join(__dirname, '/')))
+// app.use(express.static(path.join(__dirname, 'public')));
 // console.log("hiiiiii", path.join(__dirname, '../React-Admin-Panel-Bee/build'))
 // app.use(express.static(path.join(__dirname, '../React-Admin-Panel-Bee/build')));
 app.use(function (req, res, next) { // Website you wish to allow to connect
