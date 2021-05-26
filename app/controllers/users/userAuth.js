@@ -320,7 +320,23 @@ class users {
                     arrayList.push(userData)
                 }
             }
-            res.json({ code: 200, success: true, message: 'uploade successfully', data: arrayList })
+           let total_minner =  arrayList.length
+           let active_minner = 0
+           let inactive_minner =0
+           for(let item of arrayList){
+               if(item.minner_Activity==true){
+                active_minner++
+               }else{
+                inactive_minner++
+               }
+           }
+            console.log("active_minner,,,,,,",active_minner, inactive_minner )
+            let newData = {
+                team: arrayList,
+                active_minner: active_minner,
+                inactive_minner: inactive_minner
+            }
+            res.json({ code: 200, success: true, message: 'uploade successfully', data: newData })
         } catch (error) {
             console.log("Error in catch", error)
             res.json({ success: false, message: "Internal server error", })
@@ -473,7 +489,6 @@ class users {
             wallte.earning_ammount = wallte.earning_ammount.toString()
             wallte.mining_ammount = wallte.mining_ammount.toString()
 
-
             data.wallet = wallte
            
             res.json({ code: 200, success: true, message: 'uploade successfully', data: data })
@@ -625,7 +640,7 @@ class users {
                                 minner_Activity: false,
                             }
                         }, { new: true }).then(data=> console.log("successfull")).catch(err=> console.log("err", err))
-                     }, 1000*60*5
+                     }, 1000*60*1
                   );
                 }
               }

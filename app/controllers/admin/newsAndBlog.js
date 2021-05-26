@@ -15,7 +15,9 @@ class newsAndBlog {
             createNews: this.createNews.bind(this),
             createBlogs: this.createBlogs.bind(this),
             uploadeImage: this.uploadeImage.bind(this),
-            uploadeImagebase64: this.uploadeImagebase64.bind(this)
+            uploadeImagebase64: this.uploadeImagebase64.bind(this),
+            updateNews: this.updateNews.bind(this),
+            updateBlogs: this.updateBlogs.bind(this)
           
 
             // submitReferral: this.submitReferral.bind(this)
@@ -40,6 +42,68 @@ class newsAndBlog {
                 let saveData = new NewsModel(obj)
                 await saveData.save();
                 res.json({ code: 200, success: true, message: 'news save successfully', })
+            }
+
+        } catch (error) {
+            console.log("Error in catch", error)
+            res.status(500).json({ success: false, message: "Internal server error", })
+        }
+    }
+    async updateNews(req, res) {
+        try {
+            let { title, content, id, image, status} = req.body
+           console.log("hiiii", title, content, id, status)
+            let getData = await NewsModel.findOne({ _id: id }).lean()
+
+            if (getData) {
+                if(title){
+                    getData.title= title
+                }
+                if(content){
+                    getData.content= content
+                }
+                if(image){
+                    getData.image= image
+                }
+                if(status){
+                    getData.status = status
+                }
+                console.log("upadate datata", getData, typeof status)
+                let update = await NewsModel.findOneAndUpdate({_id: id},getData, {new:true})
+                res.json({ code: 200, success: true, message: 'news update successfully',data: update })
+            } else {
+                res.json({ code: 400, success: false, message: 'this news is not exist', })
+            }
+
+        } catch (error) {
+            console.log("Error in catch", error)
+            res.status(500).json({ success: false, message: "Internal server error", })
+        }
+    }
+    async updateBlogs(req, res) {
+        try {
+            let { title, content, id, image, status} = req.body
+           console.log("hiiii", title, content, id)
+            let getData = await BlogModel.findOne({ _id: id })
+
+            if (getData) {
+                let obj = {}
+                if(title){
+                    obj.title= title
+                }
+                if(content){
+                    obj.content= content
+                }
+                if(image){
+                    obj.image= image
+                }
+                if(status){
+                    obj.status= status
+                }
+                let update = BlogModel.findOneAndUpdate({_id: id},{$set:obj}, {new:true})
+                res.json({ code: 200, success: true, message: 'news update successfully',data: update })
+            } else {
+                res.json({ code: 400, success: false, message: 'this news is not exist', })
             }
 
         } catch (error) {

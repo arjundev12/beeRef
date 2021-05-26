@@ -10,6 +10,9 @@ let validationData= require('../../middlewares/FrontendValidator');
 // upload.single('profile_image')
 router.post('/news',createNewsAndBlog.createNews)
 router.post('/blogs',createNewsAndBlog.createBlogs)
+router.put('/news',createNewsAndBlog.updateNews)
+router.put('/blogs',createNewsAndBlog.updateBlogs)
+
 
 router.post('/get-news', getNewsAndBlog.getNews)
 router.post('/get-blogs', getNewsAndBlog.getBlogs)
