@@ -246,22 +246,22 @@ class FrontEntValidator {
                         notEmpty: true,
                         errorMessage: { "field_name": "_id", "error_msg": '_id is required' },
                     },
-                    email: {
-                        notEmpty: true,
-                        errorMessage: { "field_name": "email", "error_msg": 'email is required' },
-                    },
-                    name: {
-                        notEmpty: true,
-                        errorMessage: { "field_name": "name", "error_msg": 'name is required' },
-                    },
-                    number: {
-                        notEmpty: true,
-                        errorMessage: { "field_name": "number", "error_msg": 'number is required' },
-                    },
-                    username: {
-                        notEmpty: true,
-                        errorMessage: { "field_name": "username", "error_msg": 'username is required' },
-                    },
+                    // email: {
+                    //     notEmpty: true,
+                    //     errorMessage: { "field_name": "email", "error_msg": 'email is required' },
+                    // },
+                    // name: {
+                    //     notEmpty: true,
+                    //     errorMessage: { "field_name": "name", "error_msg": 'name is required' },
+                    // },
+                    // number: {
+                    //     notEmpty: true,
+                    //     errorMessage: { "field_name": "number", "error_msg": 'number is required' },
+                    // },
+                    // username: {
+                    //     notEmpty: true,
+                    //     errorMessage: { "field_name": "username", "error_msg": 'username is required' },
+                    // },
                     login_type: {
                         notEmpty: true,
                         errorMessage: { "field_name": "login_type", "error_msg": 'login_type is required' },

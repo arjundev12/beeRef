@@ -240,8 +240,8 @@ class users {
                     updateData.profile_pic = profile_pic
                 }
                 if (minner_Activity) {
-                    // updateData.minner_Activity = minner_Activity
-                    this._activateMiner(_id)
+                    updateData.minner_Activity = minner_Activity
+                    // this._activateMiner(_id)
                 }
                 
                 if (reddit_username) {
@@ -270,7 +270,8 @@ class users {
         try {
             if (req.body.profile_pic) {
                 let data = await commenFunction._uploadBase64Profile(req.body.profile_pic, 'ProfileImage')
-                res.json({ code: 200, success: true, message: 'uploade successfully', data: data })
+                var path2 = data.replace(/\\/g, "/");
+                res.json({ code: 200, success: true, message: 'uploade successfully', data: path2 })
             } else {
                 res.json({ code: 400, success: false, message: "profile_pic is require", })
             }
@@ -517,10 +518,11 @@ class users {
                 if (data) {
                     await UsersModel.findOneAndUpdate({ username: username },
                         {
-                            from_referral_id: data._id,
+                           $set :{from_referral_id: data._id,
+                            submit_referral: true}
                         }
                     ).lean()
-                     await this._activateMiner(getUser._id )
+                    //  await this._activateMiner(getUser._id )
                     await walletModel.findOneAndUpdate({ user_id: getUser._id }, {
                         $inc: {
                             referral_ammount: Constants.referral_ammount,
@@ -575,7 +577,7 @@ class users {
                     res.json({ code: 200, success: true, message: 'Status update successfully', })
                 } else {
 
-                    res.json({ code: 200, success: true, message: 'Status update successfully', })
+                    res.json({ code: 400, success: false, message: 'please send the correct status', })
 
                 }
 
