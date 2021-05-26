@@ -13,7 +13,8 @@ router.post('/blogs',createNewsAndBlog.createBlogs)
 
 router.post('/get-news', getNewsAndBlog.getNews)
 router.post('/get-blogs', getNewsAndBlog.getBlogs)
-router.post('/upload-image',upload.single('image'), createNewsAndBlog.uploadeImage)
+// router.post('/upload-image',upload.single('image'), createNewsAndBlog.uploadeImage)
+router.post('/upload-image', createNewsAndBlog.uploadeImagebase64)
 
 
 module.exports = router;

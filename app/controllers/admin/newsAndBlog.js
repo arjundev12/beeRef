@@ -14,7 +14,8 @@ class newsAndBlog {
         return {
             createNews: this.createNews.bind(this),
             createBlogs: this.createBlogs.bind(this),
-            uploadeImage: this.uploadeImage.bind(this)
+            uploadeImage: this.uploadeImage.bind(this),
+            uploadeImagebase64: this.uploadeImagebase64.bind(this)
           
 
             // submitReferral: this.submitReferral.bind(this)
@@ -80,6 +81,20 @@ class newsAndBlog {
 
         } catch (error) {
             res.json({ success: false, message: "Internal server error", })
+        }
+    }
+    async uploadeImagebase64(req, res) {
+        try {
+            if (req.body.image) {
+                let data = await commenFunction._uploadBase64image(req.body.image, 'NewsAndBlogs')
+                var path2 = data.replace(/\\/g, "/");
+                res.json({ code: 200, success: true, message: 'uploade successfully', data: path2 })
+            } else {
+                res.json({ code: 400, success: false, message: "order_image is require", })
+            }
+
+        } catch (error) {
+            res.json({ code: 400, success: false, message: "Internal server error", })
         }
     }
  
