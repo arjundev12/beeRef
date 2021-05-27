@@ -317,6 +317,7 @@ class users {
                     let userData = {}
                     userData = await this._getUserData(item.id)
                     userData.status = item.status
+                    userData.team_size = 0
                     arrayList.push(userData)
                 }
             }
