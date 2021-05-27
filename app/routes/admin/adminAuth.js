@@ -10,6 +10,7 @@ let validationData= require('../../middlewares/FrontendValidator');
 // upload.single('profile_image')
 router.post('/login',validationData.login, admin_controller.loginAdmin)
 router.post('/get-user', admin_controller.getUser)
+router.post('/get-transaction', admin_controller.getTransaction)
 
 
 module.exports = router;

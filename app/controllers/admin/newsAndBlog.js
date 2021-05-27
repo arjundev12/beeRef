@@ -100,7 +100,7 @@ class newsAndBlog {
                 if(status){
                     obj.status= status
                 }
-                let update = BlogModel.findOneAndUpdate({_id: id},{$set:obj}, {new:true})
+                let update = await BlogModel.findOneAndUpdate({_id: id},{$set:obj}, {new:true})
                 res.json({ code: 200, success: true, message: 'news update successfully',data: update })
             } else {
                 res.json({ code: 400, success: false, message: 'this news is not exist', })

@@ -29,7 +29,7 @@ class Common {
             }
             let query = {}
             let data = await NewsModel.paginate(query, options)
-            console.log("news", data)
+            // console.log("news", data)
             res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
         } catch (error) {
             console.log("Error in catch", error)
@@ -47,7 +47,7 @@ class Common {
             }
             let query = {}
             let data = await BlogModel.paginate(query, options)
-            console.log("news", data)
+            // console.log("news", data)
             res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
         } catch (error) {
             console.log("Error in catch", error)

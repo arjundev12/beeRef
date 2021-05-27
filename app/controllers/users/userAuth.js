@@ -483,7 +483,7 @@ class users {
             let getblogs = await BlogModel.paginate({}, options)
             data.blogs = getblogs.docs
             ////////////////////////////get wallet//////////////////////////
-            let wallte = await walletModel.findOne({ user_id: _id }).populate('user_id', 'name username email user_type ').lean()
+            let wallte = await walletModel.findOne({ user_id: _id }).populate('user_id', 'name username email user_type  minner_Activity').lean()
             wallte.total_amount = wallte.total_amount.toString()
             wallte.referral_ammount = wallte.referral_ammount.toString()
             wallte.earning_ammount = wallte.earning_ammount.toString()

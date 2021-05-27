@@ -14,6 +14,9 @@ var blogsSchema = new Schema({
       type: String,
       default: ""
     },
+    status: {
+      type: String
+    },
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users"
