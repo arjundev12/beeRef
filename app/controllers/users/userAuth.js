@@ -483,7 +483,7 @@ class users {
             let getblogs = await BlogModel.paginate({}, options)
             data.blogs = getblogs.docs
             ////////////////////////////get wallet//////////////////////////
-            let wallte = await walletModel.findOne({ user_id: _id }).populate('user_id', 'name username email user_type  minner_Activity').lean()
+            let wallte = await walletModel.findOne({ user_id: _id }).populate('user_id', 'name username email user_type  minner_Activity last_mining_time').lean()
             wallte.total_amount = wallte.total_amount.toString()
             wallte.referral_ammount = wallte.referral_ammount.toString()
             wallte.earning_ammount = wallte.earning_ammount.toString()
@@ -539,8 +539,10 @@ class users {
                 if (data) {
                     await UsersModel.findOneAndUpdate({ username: username },
                         {
-                           $set :{from_referral_id: data._id,
-                            submit_referral: true}
+                           $set :{
+                            from_referral_id: data._id,
+                            submit_referral: true
+                        }
                         }
                     ).lean()
                     //  await this._activateMiner(getUser._id )
