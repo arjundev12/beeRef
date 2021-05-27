@@ -334,7 +334,8 @@ class users {
             let newData = {
                 team: arrayList,
                 active_minner: active_minner,
-                inactive_minner: inactive_minner
+                inactive_minner: inactive_minner,
+                total_minner: total_minner
             }
             res.json({ code: 200, success: true, message: 'uploade successfully', data: newData })
         } catch (error) {
