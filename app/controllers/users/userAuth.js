@@ -472,7 +472,7 @@ class users {
             data.team = arrayList.length > 5 ? arrayList.splice(0, 5) : arrayList
             //////////////////get news///////////////////////
             let options = {
-                offset: req.body.offset || 0,
+                page: req.body.page || 1,
                 limit: req.body.limit || 2,
                 sort: { createdAt: -1 },
                 lean: true,
@@ -550,7 +550,7 @@ class users {
                             total_amount: Constants.referral_ammount
                         }
                     }).lean()
-                    //reciver trasaction
+                    //reciver trasaction //send notifications
                     commenFunction._createHistory(getUser._id, null, Constants.referral_ammount, Constants.recieve, Constants.referral)
                     res.json({ code: 200, success: true, message: 'Submit successfully', data: data })
                 } else {
@@ -646,6 +646,7 @@ class users {
               }
               
               minner._DeactivateMiner();
+              //send notifications
         } catch (error) {
             console.log("error in catch _activateMiner", error)
         }

@@ -46,7 +46,7 @@ class adminAuth {
     async getUser(req, res) {
         try {
             let options = {
-                offset: req.body.offset || 0,
+                page: req.body.page || 1,
                 limit: req.body.limit || 10,
                 sort: { createdAt: -1 },
                 lean: true,
@@ -68,7 +68,7 @@ class adminAuth {
     async getTransaction(req, res) {
         try {
             let options = {
-                offset: req.body.offset || 0,
+                page: req.body.page || 1,
                 limit: req.body.limit || 10,
                 sort: { createdAt: -1 },
                 lean: true,

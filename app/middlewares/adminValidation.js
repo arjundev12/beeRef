@@ -387,15 +387,15 @@ class Validation {
     async listValidation(req, res, next) {
         if (Object.keys(req.body).length == 2 || Object.keys(req.body).length == 3) {
             req.checkBody({
-                offset: {
+                page: {
                     notEmpty: true,
                     // matches: {
 
                     //     options: /^[1-9 ]{1,10}$/,
                     //     // errorMessage: 'Password should contain minimum 4 characters and max 15'
-                    //     errorMessage: { "field_name": "offset", "error_msg": 'offset should contain minimum 1 number and max 10' },
+                    //     errorMessage: { "field_name": "page", "error_msg": 'page should contain minimum 1 number and max 10' },
                     // },
-                    errorMessage: { "field_name": "offset", "error_msg": 'offset is required' },
+                    errorMessage: { "field_name": "page", "error_msg": 'page is required' },
                 },
                 limit: {
                     notEmpty: true,
