@@ -1,7 +1,7 @@
 const { json } = require("body-parser");
 var firebaseAdmin = require("firebase-admin");
 
-var serviceAccount = require("../authConfig/callmymoover-firebase-adminsdk-lcyd7-aae774fdab.json");
+var serviceAccount = require("../authConfig/beeRefkey.json");
 const fcmToken = require('../models/fcmToken')
 
 firebaseAdmin.initializeApp({
