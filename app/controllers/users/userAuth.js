@@ -472,6 +472,7 @@ class users {
                 for (let item of team.ref_to_users) {
                     let userData = {}
                     userData = await this._getUserData(item.id)
+                    userData.team_size = userData.ref_to_users ? userData.ref_to_users.length : 0
                     userData.status = item.status
                     arrayList.push(userData)
                 }
