@@ -20,7 +20,7 @@ _sendPushNotification = async (message, fcmtoken =null, data = null) => {
         time : message.time,
         fromName: data.fromName ? data.fromName +"": "",
         toName: data.toName? data.toName: "",
-        toId :data.toId? data.toId: ""
+        toId :data.toId? data.toId.toString() : ""
 
       }
     };

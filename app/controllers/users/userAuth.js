@@ -576,7 +576,7 @@ class users {
             let { _id, status } = req.body
             let data
 
-            // console.log("req.body", req.body)
+            console.log("req.body", req.body)
             data = await UsersModel.findOne({ _id: _id })
             // console.log(data)
             // let dt = moment().format("DD.MM.YYYY HH.mm.ss");
@@ -636,7 +636,7 @@ class users {
             await UsersModel.findOneAndUpdate({ _id: _id }, {
                 $set: {
                     minner_Activity: true,
-                    last_mining_time: moment().format("DD.MM.YYYY HH.mm.ss")
+                    last_mining_time: moment().utcOffset("+05:30").format("DD.MM.YYYY HH.mm.ss")
                 }
             }, { new: true })
             const minner = {
@@ -652,20 +652,22 @@ class users {
                         }, { new: true }).then(data1 => {
                             console.log("successfull")
                             FcmTokenModel.findOne({ userId: data1._id }).populate('userId').then(data2 => {
+                                console.log("data2", data2)
                                 let message = {
                                     title: "Press the mining button for earning",
-                                    time: moment().format("DD.MM.YYYY HH.mm.ss")
+                                    time: moment().utcOffset("+05:30").format("DD.MM.YYYY HH.mm.ss")
                                 }
                                 let data = {
                                     fromName: "Admin",
-                                    toName: data2.userId.name ? data1.userId.name : "",
+                                    toName: data2.userId.name ? data2.userId.name : "",
                                     toId :data2._id,
                                     fromId: "",
                                 }
                                 Notification._sendPushNotification(message, data2.fcmToken, data)
                             })
                         }).catch(err => console.log("err", err))
-                    }, 1000 * 60 * 1
+                    },5000
+                    //  1000 * 60 * 1
                     );
                 }
             }
