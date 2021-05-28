@@ -36,7 +36,8 @@ router.get('/wallet', wallet.getWallet)
 
 router.post('/get-news', getNewsAndBlog.getNews)
 router.post('/get-blogs', getNewsAndBlog.getBlogs)
-
+router.get('/view-blogs', getNewsAndBlog.viewBlogs)
+router.get('/view-news', getNewsAndBlog.viewNews)
 
 
 

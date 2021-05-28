@@ -14,6 +14,8 @@ class Common {
         return {
             getBlogs: this.getBlogs.bind(this),
             getNews: this.getNews.bind(this),
+            viewBlogs: this.viewBlogs.bind(this),
+            viewNews: this.viewNews.bind(this),
             _uploadBase64image: this._uploadBase64image.bind(this),
             _validateBase64: this._validateBase64.bind(this),
         }
@@ -37,6 +39,21 @@ class Common {
         }
     }
 
+    async viewNews(req, res) {
+        try {
+            if(!req.query._id){
+                res.json({ code: 400, success: false, message: "_id is required", data: data }) 
+               }else{
+                let query = {_id:req.query._id, status: 'active' }
+                let data = await NewsModel.findOne(query)
+                // console.log("NewsModel", data)
+                res.json({ code: 200, success: true, message: "Get data successfully ", data: data })
+               }
+        } catch (error) {
+            console.log("Error in catch", error)
+            res.status(500).json({ success: false, message: "Internal server error", })
+        }
+    }
     async getBlogs(req, res) {
         try {
             let options = {
@@ -49,6 +66,22 @@ class Common {
             let data = await BlogModel.paginate(query, options)
             // console.log("news", data)
             res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
+        } catch (error) {
+            console.log("Error in catch", error)
+            res.status(500).json({ success: false, message: "Internal server error", })
+        }
+    }
+    async viewBlogs(req, res) {
+        try {
+           if(!req.query._id){
+            res.json({ code: 400, success: false, message: "_id is required", data: data }) 
+           }else{
+            let query = {_id:req.query._id, status: 'active' }
+            let data = await BlogModel.findOne(query)
+            // console.log("BlogModel", data)
+            res.json({ code: 200, success: true, message: "Get data successfully ", data: data })
+           }
+           
         } catch (error) {
             console.log("Error in catch", error)
             res.status(500).json({ success: false, message: "Internal server error", })
