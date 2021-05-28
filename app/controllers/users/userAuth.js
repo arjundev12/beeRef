@@ -31,7 +31,8 @@ class users {
             chekUserName: this.chekUserName.bind(this),
             chekRedditUserName: this.chekRedditUserName.bind(this),
             resetPassword: this.resetPassword.bind(this),
-            setFcmToken: this.setFcmToken.bind(this)
+            setFcmToken: this.setFcmToken.bind(this),
+            sendNotificationToUser: this.sendNotificationToUser.bind(this)
         }
     }
 
@@ -792,6 +793,7 @@ class users {
             } else {
                 console.log("senderId, ..reciverId..", senderId, reciverId)
                 let fcmTokenData = await FcmTokenModel.findOne({ userId: reciverId }).populate('userId').lean()
+                console.log("fcmTokenData", fcmTokenData)
                 let senderDetails = await UsersModel.findOne({ _id: senderId }).lean()
                 if (fcmTokenData) {
                     let message = {
@@ -806,8 +808,8 @@ class users {
                     })
                     await saveNotification.save()
                     let data = {
-                        fromName: senderDetails.name ? senderDetails.name : "",
-                        toName: fcmTokenData.UserId.name ? fcmTokenData.UserId.name : "",
+                        fromName: senderDetails ? senderDetails.name : "",
+                        toName: fcmTokenData.userId.name ? fcmTokenData.userId.name : "",
                         toId : reciverId,
                         fromId: senderId,
                     }
