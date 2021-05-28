@@ -668,7 +668,7 @@ class users {
                                 Notification._sendPushNotification(message, data2.fcmToken, data)
                             })
                         }).catch(err => console.log("err", err))
-                    }, 1000 * 60 * 2
+                    }, 1000 * 60 * 1
                     // 
                     );
                 }
