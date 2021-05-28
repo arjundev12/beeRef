@@ -25,7 +25,7 @@ _sendPushNotification = async (message, fcmtoken =null, data = null) => {
       }
     };
     let token  =[fcmtoken]
-    console.log(",payload,token,payload,token",payload,token)
+    console.log("payload,token,payload,token",payload,token)
     var option = {
       priority: "high",
       timeToLive: 60 * 60 * 24
