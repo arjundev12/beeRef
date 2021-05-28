@@ -44,7 +44,7 @@ router.post('/check-username',validationData.chekUserName, user_controller.chekU
 router.post('/check-reddit-username',validationData.chekRedditUserName, user_controller.chekRedditUserName)
 router.post('/reset-password',validationData.resetPassword, user_controller.resetPassword)
 
-
+router.post('/set-token', user_controller.setFcmToken)
 
 
 

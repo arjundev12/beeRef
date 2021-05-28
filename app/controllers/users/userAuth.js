@@ -9,6 +9,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 const authConfig = require('../../authConfig/auth');
 const Constants = require('../../utilities/constants')
+const FcmTokenModel = require('../../models/fcmToken')
+const NotificationModel = require('../../models/notification')
+const Notification = require('../../middlewares/notification')
 class users {
     constructor() {
         return {
@@ -27,7 +30,8 @@ class users {
             minnerActivity: this.minnerActivity.bind(this),
             chekUserName: this.chekUserName.bind(this),
             chekRedditUserName: this.chekRedditUserName.bind(this),
-            resetPassword: this.resetPassword.bind(this)
+            resetPassword: this.resetPassword.bind(this),
+            setFcmToken: this.setFcmToken.bind(this)
         }
     }
 
@@ -91,7 +95,6 @@ class users {
                         password: hash,
                         login_type: login_type,
                         Referral_id: referral_id
-
                     })
                     data = await saveData.save();
                     await commenFunction._createWallet(data._id, 'user')
@@ -184,7 +187,7 @@ class users {
         try {
             let { email, password } = req.body
             let getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: 'manual' }, { user_type: 'user' }] },
-                { username: 1, email: 1, Referral_id: 1, password: 1, login_type: 1 ,profile_pic:1,name:1}).lean()
+                { username: 1, email: 1, Referral_id: 1, password: 1, login_type: 1, profile_pic: 1, name: 1 }).lean()
             console.log("getUser", getUser)
             if (getUser) {
                 let verifypass = await bcrypt.compareSync(password, getUser.password);
@@ -228,8 +231,8 @@ class users {
                     updateData.username = username
                 }
                 if (number) {
-                    if(getUser.number == ""){
-                           this._addNumberReward(getUser._id)
+                    if (getUser.number == "") {
+                        this._addNumberReward(getUser._id)
                     }
                     updateData.number = number
                 }
@@ -243,11 +246,11 @@ class users {
                     updateData.minner_Activity = minner_Activity
                     // this._activateMiner(_id)
                 }
-                
+
                 if (reddit_username) {
-                    if(getUser.reddit_username == ""){
+                    if (getUser.reddit_username == "") {
                         this._addRedditReward(getUser._id)
-                     }
+                    }
                     updateData.reddit_username = reddit_username
                 }
                 let updateUser = await UsersModel.findOneAndUpdate(query, { $set: updateData }, { new: true })
@@ -317,22 +320,22 @@ class users {
                     let userData = {}
                     userData = await this._getUserData(item.id)
                     userData.status = item.status
-                    userData.team_size = userData.ref_to_users?userData.ref_to_users.length: 0
-                    delete  userData.ref_to_users
+                    userData.team_size = userData.ref_to_users ? userData.ref_to_users.length : 0
+                    delete userData.ref_to_users
                     arrayList.push(userData)
                 }
             }
-           let total_minner =  arrayList.length
-           let active_minner = 0
-           let inactive_minner =0
-           for(let item of arrayList){
-               if(item.minner_Activity==true){
-                active_minner++
-               }else{
-                inactive_minner++
-               }
-           }
-            console.log("active_minner,,,,,,",active_minner, inactive_minner )
+            let total_minner = arrayList.length
+            let active_minner = 0
+            let inactive_minner = 0
+            for (let item of arrayList) {
+                if (item.minner_Activity == true) {
+                    active_minner++
+                } else {
+                    inactive_minner++
+                }
+            }
+            console.log("active_minner,,,,,,", active_minner, inactive_minner)
             let newData = {
                 team: arrayList,
                 active_minner: active_minner,
@@ -493,7 +496,7 @@ class users {
             wallte.mining_ammount = wallte.mining_ammount.toString()
 
             data.wallet = wallte
-           
+
             res.json({ code: 200, success: true, message: 'uploade successfully', data: data })
         } catch (error) {
             console.log("Error in catch", error)
@@ -542,10 +545,10 @@ class users {
                 if (data) {
                     await UsersModel.findOneAndUpdate({ username: username },
                         {
-                           $set :{
-                            from_referral_id: data._id,
-                            submit_referral: true
-                        }
+                            $set: {
+                                from_referral_id: data._id,
+                                submit_referral: true
+                            }
                         }
                     ).lean()
                     //  await this._activateMiner(getUser._id )
@@ -571,7 +574,7 @@ class users {
         try {
             let { _id, status } = req.body
             let data
-           
+
             // console.log("req.body", req.body)
             data = await UsersModel.findOne({ _id: _id })
             // console.log(data)
@@ -579,13 +582,13 @@ class users {
             // let endDate = moment(dt, "DD.MM.YYYY HH.mm.ss");
             // let startDate = moment(data.last_mining_time, "DD.MM.YYYY HH.mm.ss");
             // Number(endDate.diff(startDate, 'hours')) < 24
-            
+
             if (data.minner_Activity) {
                 res.json({ code: 400, success: false, message: 'You have not click before 24 hour', })
             } else {
                 if (status == true || status == 'true') {
                     await this._activateMiner(_id)
-                   
+
                     await walletModel.findOneAndUpdate({ user_id: _id }, {
                         $inc: {
                             mining_ammount: Constants.mining_ammount,
@@ -638,20 +641,36 @@ class users {
             const minner = {
                 _id: _id,
                 _DeactivateMiner() {
-                  setTimeout(() => { 
+                    setTimeout(() => {
                         console.log(`Rover says ${this._id}!`);
-                         UsersModel.findOneAndUpdate({ _id: this._id }, {
+                        UsersModel.findOneAndUpdate({ _id: this._id }, {
                             $set: {
                                 minner_Activity: false,
+                                last_mining_time: ""
                             }
-                        }, { new: true }).then(data=> console.log("successfull")).catch(err=> console.log("err", err))
-                     }, 1000*60*1
-                  );
+                        }, { new: true }).then(data1 => {
+                            console.log("successfull")
+                            FcmTokenModel.findOne({ userId: data1._id }).populate('userId').then(data2 => {
+                                let message = {
+                                    title: "Press the mining button for earning",
+                                    time: moment().format("DD.MM.YYYY HH.mm.ss")
+                                }
+                                let data = {
+                                    fromName: "Admin",
+                                    toName: data2.userId.name ? data1.userId.name : "",
+                                    toId :data2._id,
+                                    fromId: "",
+                                }
+                                Notification._sendPushNotification(message, data2.fcmToken, data)
+                            })
+                        }).catch(err => console.log("err", err))
+                    }, 1000 * 60 * 5
+                    );
                 }
-              }
-              
-              minner._DeactivateMiner();
-              //send notifications
+            }
+
+            minner._DeactivateMiner();
+            //send notifications
         } catch (error) {
             console.log("error in catch _activateMiner", error)
         }
@@ -693,12 +712,12 @@ class users {
 
                 let verifypass = await bcrypt.compareSync(oldPassword, getUser.password);
                 if (verifypass) {
-                    let update = await UsersModel.findOneAndUpdate({ _id: _id }, { $set: { password: newPassword }},{new: true} )
+                    let update = await UsersModel.findOneAndUpdate({ _id: _id }, { $set: { password: newPassword } }, { new: true })
                     res.json({ code: 200, success: true, message: 'Password update successfully', data: update })
-                }else{
-                    res.json({ code: 400, success: true, message: 'Old password is invalid', data: getUser }) 
+                } else {
+                    res.json({ code: 400, success: true, message: 'Old password is invalid', data: getUser })
                 }
-               
+
             } else {
                 res.json({ code: 400, success: false, message: 'user is not available', })
             }
@@ -707,7 +726,7 @@ class users {
             res.json({ success: false, message: "Internal server error", })
         }
     }
-   async _addNumberReward(_id){
+    async _addNumberReward(_id) {
         try {
             await walletModel.findOneAndUpdate({ user_id: _id }, {
                 $inc: {
@@ -721,7 +740,7 @@ class users {
         }
         return
     }
-    async _addRedditReward(_id){
+    async _addRedditReward(_id) {
         try {
             await walletModel.findOneAndUpdate({ user_id: _id }, {
                 $inc: {
@@ -734,6 +753,74 @@ class users {
             console.log("error in catch _addRedditReward", error)
         }
         return
+    }
+
+    async setFcmToken(req, res) {
+        try {
+
+            if (req.body.fcmToken) {
+                let data
+                let query = { status: 'active' }
+                let setData = { fcmToken: req.body.fcmToken }
+                if (req.body.userId) {
+                    setData.userId = req.body.userId
+                    query.userId = req.body.userId
+                }
+                console.log("query", query, "setData", setData)
+                data = await FcmTokenModel.findOne(query);
+                if (data) {
+                    data = await FcmTokenModel.findOneAndUpdate(query, { $set: setData }, { new: true });
+                } else {
+                    let saveData = new FcmTokenModel(setData)
+                    data = await saveData.save();
+                }
+                res.json({ code: 200, success: true, message: "Token set successfully", data: data })
+            } else {
+                res.json({ code: 403, success: false, message: "Fcm token is required", })
+            }
+
+        } catch (error) {
+            console.log("error in catch", error)
+            res.json({ code: 500, success: false, message: "Internal server error", })
+        }
+    }
+    async sendNotificationToUser(req, res) {
+        try {
+            let { senderId, reciverId } = req.body
+            if (!reciverId || !senderId) {
+                return res.json({ code: 400, success: false, message: "Perameter is missing", })
+            } else {
+                console.log("senderId, ..reciverId..", senderId, reciverId)
+                let fcmTokenData = await FcmTokenModel.findOne({ userId: reciverId }).populate('userId').lean()
+                let senderDetails = await UsersModel.findOne({ _id: senderId }).lean()
+                if (fcmTokenData) {
+                    let message = {
+                        title: "Press the mining button for earning",
+                        time: moment().format("DD.MM.YYYY HH.mm.ss")
+                    }
+                    let saveNotification = new NotificationModel({
+                        title: message.title,
+                        toId: reciverId,
+                        fromId: senderId,
+                        type: 'Remember'
+                    })
+                    await saveNotification.save()
+                    let data = {
+                        fromName: senderDetails.name ? senderDetails.name : "",
+                        toName: fcmTokenData.UserId.name ? fcmTokenData.UserId.name : "",
+                        toId : reciverId,
+                        fromId: senderId,
+                    }
+                    let sendnotification = await Notification._sendPushNotification(message, fcmTokenData.fcmToken, data)
+                    res.json({ code: 200, success: true, message: "Notification send successfully", })
+                } else {
+                    res.json({ code: 400, success: true, message: "Fcm token is not updated", })
+                }
+            }
+        } catch (error) {
+            console.log("error in catch", error)
+            res.json({ code: 400, success: false, message: "Internal server error", })
+        }
     }
 
 }
