@@ -662,7 +662,7 @@ class users {
                                 let data = {
                                     fromName: "Admin",
                                     toName: data2.userId.name ? data2.userId.name : "",
-                                    toId :data2._id,
+                                    toId :data2.userId._id,
                                     fromId: "",
                                 }
                                 Notification._sendPushNotification(message, data2.fcmToken, data)
