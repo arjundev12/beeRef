@@ -473,6 +473,7 @@ class users {
                     let userData = {}
                     userData = await this._getUserData(item.id)
                     userData.team_size = userData.ref_to_users ? userData.ref_to_users.length : 0
+                    delete userData.ref_to_users
                     userData.status = item.status
                     arrayList.push(userData)
                 }
