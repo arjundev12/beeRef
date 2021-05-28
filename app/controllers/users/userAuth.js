@@ -152,7 +152,7 @@ class users {
             let getUser = await UsersModel.findOne({ number: Number(number) }).lean();
             console.log("getUser", getUser)
             if (getUser) {
-                let dt = moment().format("DD.MM.YYYY HH.mm.ss");
+                let dt = moment().utcOffset("+05:30").format("DD.MM.YYYY HH.mm.ss");
                 let endDate = moment(dt, "DD.MM.YYYY HH.mm.ss");
                 let startDate = moment(getUser.otp_details.otp_time, "DD.MM.YYYY HH.mm.ss");
                 console.log(",,,", getUser.otp_details.otp != Number(otp), getUser.otp_details.otp, Number(otp))
@@ -296,7 +296,7 @@ class users {
                 is_super_admin: 0,
                 number: 0
             }).lean()
-            // let dt = moment().format("DD.MM.YYYY HH.mm.ss");
+            // let dt = moment().utcOffset("+05:30").format("DD.MM.YYYY HH.mm.ss");
             // let endDate = moment(dt, "DD.MM.YYYY HH.mm.ss");
             // let startDate = moment(data.last_mining_time, "DD.MM.YYYY HH.mm.ss");
 
@@ -360,7 +360,7 @@ class users {
                 createdAt: 0,
                 __v: 0
             }).lean()
-            // let dt = moment().format("DD.MM.YYYY HH.mm.ss");
+            // let dt = moment().utcOffset("+05:30").format("DD.MM.YYYY HH.mm.ss");
             // let endDate = moment(dt, "DD.MM.YYYY HH.mm.ss");
             // let startDate = moment(data.last_mining_time, "DD.MM.YYYY HH.mm.ss");
 
@@ -579,7 +579,7 @@ class users {
             console.log("req.body", req.body)
             data = await UsersModel.findOne({ _id: _id })
             // console.log(data)
-            // let dt = moment().format("DD.MM.YYYY HH.mm.ss");
+            // let dt = moment().utcOffset("+05:30").format("DD.MM.YYYY HH.mm.ss");
             // let endDate = moment(dt, "DD.MM.YYYY HH.mm.ss");
             // let startDate = moment(data.last_mining_time, "DD.MM.YYYY HH.mm.ss");
             // Number(endDate.diff(startDate, 'hours')) < 24
@@ -800,7 +800,7 @@ class users {
                 if (fcmTokenData) {
                     let message = {
                         title: "Press the mining button for earning",
-                        time: moment().format("DD.MM.YYYY HH.mm.ss")
+                        time: moment().utcOffset("+05:30").format("DD.MM.YYYY HH.mm.ss")
                     }
                     let saveNotification = new NotificationModel({
                         title: message.title,
