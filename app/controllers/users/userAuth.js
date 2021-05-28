@@ -283,7 +283,7 @@ class users {
     async _getUserData(id) {
         try {
             let data = await UsersModel.findOne({ _id: id }, {
-                ref_to_users: 0,
+                // ref_to_users: 0,
                 password: 0,
                 block_user: 0,
                 user_type: 0,
@@ -317,7 +317,8 @@ class users {
                     let userData = {}
                     userData = await this._getUserData(item.id)
                     userData.status = item.status
-                    userData.team_size = 0
+                    userData.team_size = userData.ref_to_users?userData.ref_to_users.length: 0
+                    delete  userData.ref_to_users
                     arrayList.push(userData)
                 }
             }
