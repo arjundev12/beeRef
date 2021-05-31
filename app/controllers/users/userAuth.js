@@ -225,30 +225,30 @@ class users {
             console.log("getUser", getUser)
             if (getUser) {
                 let updateData = {}
-                if (name) {
+                if (name && name!="") {
                     updateData.name = name
                 }
-                if (username) {
+                if (username&& username!="") {
                     updateData.username = username
                 }
-                if (number) {
+                if (number && number!="") {
                     if (getUser.number == "") {
                         this._addNumberReward(getUser._id)
                     }
                     updateData.number = number
                 }
-                if (country) {
+                if (country && country!="") {
                     updateData.country = country
                 }
-                if (profile_pic) {
+                if (profile_pic&& profile_pic!="") {
                     updateData.profile_pic = profile_pic
                 }
-                if (minner_Activity) {
+                if (minner_Activity && minner_Activity!="") {
                     updateData.minner_Activity = minner_Activity
                     // this._activateMiner(_id)
                 }
 
-                if (reddit_username) {
+                if (reddit_username && reddit_username!="") {
                     if (getUser.reddit_username == "") {
                         this._addRedditReward(getUser._id)
                     }
