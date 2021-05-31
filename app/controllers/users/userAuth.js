@@ -276,6 +276,9 @@ class users {
                 let data = await commenFunction._uploadBase64Profile(req.body.profile_pic, 'ProfileImage')
                 var path2 = data.replace(/\\/g, "/");
                 res.json({ code: 200, success: true, message: 'uploade successfully', data: path2 })
+            }
+            else if(req.body.profile_pic ==""){ 
+                res.json({ code: 200, success: true, message: 'uploade successfully', data: "" })
             } else {
                 res.json({ code: 400, success: false, message: "profile_pic is require", })
             }
