@@ -143,7 +143,7 @@ class Common {
                 saveData.to_id = toId
             }
             if(amount){
-                saveData.amount= amount
+                saveData.amount= Number(amount)
             }
           let saveData1=  new transactionModel(saveData)
           await saveData1.save()

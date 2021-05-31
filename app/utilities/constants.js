@@ -9,10 +9,10 @@
 
  module.exports = {
     referral_ammount: 50,
-    earning_ammount: 0.1,  // 5 % amount of mining_ammount
-    mining_ammount: 2, 
-    number_reward: 2,
-    reddit_reward: 2, 
+    earning_ammount: 1,  // 10 % amount of mining_ammount
+    mining_ammount: 10, 
+    number_reward: 10,
+    reddit_reward: 10, 
     recieve :"recieve",
     send :"send",
     mining: "mining",

@@ -7,8 +7,8 @@ var transactionSchema = new Schema({
         enum: ['mining', 'referral','earning'],
     },
     amount: {
-        type: String,
-        default: "0",
+        type: Number,
+        default: 0,
         trim: true
     },
     type: {

@@ -294,7 +294,7 @@ class users {
                 is_email_verify: 0,
                 is_number_verify: 0,
                 is_super_admin: 0,
-                number: 0
+                number: 0,
             }).lean()
             // let dt = moment().utcOffset("+05:30").format("DD.MM.YYYY HH.mm.ss");
             // let endDate = moment(dt, "DD.MM.YYYY HH.mm.ss");
@@ -460,6 +460,9 @@ class users {
             res.json({ success: false, message: "Internal server error", })
         }
     }
+    async _calculateMiningRate(team){
+
+    }
     async getDashboard(req, res) {
         try {
             let data = {}
@@ -468,6 +471,8 @@ class users {
             ///////////////////get team//////////////
             let team = await UsersModel.findOne({ _id: _id }).lean()
             let arrayList = [];
+            let miningRate =0
+            let activeminer = 0
             if (team.ref_to_users) {
                 for (let item of team.ref_to_users) {
                     let userData = {}
@@ -475,9 +480,15 @@ class users {
                     userData.team_size = userData.ref_to_users ? userData.ref_to_users.length : 0
                     delete userData.ref_to_users
                     userData.status = item.status
+                    if(userData.minner_Activity== true){
+                        miningRate +=  0.0416666666666667
+                        activeminer += 1
+                    }
                     arrayList.push(userData)
+                    
                 }
             }
+          
             data.team = arrayList.length > 5 ? arrayList.splice(0, 5) : arrayList
             //////////////////get news///////////////////////
             let options = {
@@ -497,6 +508,11 @@ class users {
             wallte.referral_ammount = wallte.referral_ammount.toString()
             wallte.earning_ammount = wallte.earning_ammount.toString()
             wallte.mining_ammount = wallte.mining_ammount.toString()
+            wallte.miningRate = miningRate+ " /per hour",
+            wallte.active_minner= activeminer
+            wallte.total_minner= arrayList.length
+
+            
 
             data.wallet = wallte
 
