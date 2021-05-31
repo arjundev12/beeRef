@@ -516,7 +516,9 @@ class users {
                 res.json({ code: 404, success: false, message: 'you are already submit referral code' })
             } else {
                 let getUserTo = await UsersModel.findOne({ Referral_id: referral_code }).lean()
-                if (!getUserTo.ref_to_users) {
+                if(!getUserTo){
+                    res.json({ code: 404, success: false, message: 'Referral code is invalide' }) 
+                }else if (!getUserTo.ref_to_users) {
                     updateData = {
                         $addToSet: {
                             ref_to_users: {
