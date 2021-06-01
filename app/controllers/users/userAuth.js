@@ -80,10 +80,10 @@ class users {
             let username = email.substring(0, email.lastIndexOf("@"));
             let referral_id = await this._generateRefID()
             let getUser
-            console.log("logintype ", login_type, social_media_key)
+            // console.log("logintype ", login_type, social_media_key)
             if (login_type == 'manual') {
                 getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: login_type }, { user_type: 'user' }] })
-                console.log("getUser", getUser)
+                // console.log("getUser", getUser)
                 if (getUser) {
                     error = true
                 } else {
@@ -150,12 +150,12 @@ class users {
 
             let { number, otp } = req.body
             let getUser = await UsersModel.findOne({ number: Number(number) }).lean();
-            console.log("getUser", getUser)
+            // console.log("getUser", getUser)
             if (getUser) {
                 let dt = moment().utcOffset("+05:30").format("DD.MM.YYYY HH.mm.ss");
                 let endDate = moment(dt, "DD.MM.YYYY HH.mm.ss");
                 let startDate = moment(getUser.otp_details.otp_time, "DD.MM.YYYY HH.mm.ss");
-                console.log(",,,", getUser.otp_details.otp != Number(otp), getUser.otp_details.otp, Number(otp))
+                // console.log(",,,", getUser.otp_details.otp != Number(otp), getUser.otp_details.otp, Number(otp))
                 if (getUser.otp_details.otp != Number(otp)) {
                     errorMessage = "Otp is invalid"
                 }
@@ -189,7 +189,7 @@ class users {
             let { email, password } = req.body
             let getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: 'manual' }, { user_type: 'user' }] },
                 { username: 1, email: 1, Referral_id: 1, password: 1, login_type: 1, profile_pic: 1, name: 1 }).lean()
-            console.log("getUser", getUser)
+            // console.log("getUser", getUser)
             if (getUser) {
                 let verifypass = await bcrypt.compareSync(password, getUser.password);
                 if (verifypass) {
@@ -213,7 +213,7 @@ class users {
     async UpdateProfile(req, res) {
         try {
             let { _id, name, email, username, number, profile_pic, login_type, country, reddit_username, minner_Activity } = req.body
-            console.log("getUser", name, email, username, number, profile_pic, login_type, country)
+            // console.log("getUser", name, email, username, number, profile_pic, login_type, country)
             let array = [{ _id: _id }, { login_type: login_type }]
             let query = { $and: array }
             if (email) {
@@ -222,7 +222,7 @@ class users {
                 })
             }
             let getUser = await UsersModel.findOne(query).lean()
-            console.log("getUser", getUser)
+            // console.log("getUser", getUser)
             if (getUser) {
                 let updateData = {}
                 if (name && name!="") {
@@ -339,7 +339,7 @@ class users {
                     inactive_minner++
                 }
             }
-            console.log("active_minner,,,,,,", active_minner, inactive_minner)
+            // console.log("active_minner,,,,,,", active_minner, inactive_minner)
             let newData = {
                 team: arrayList,
                 active_minner: active_minner,
@@ -551,7 +551,7 @@ class users {
                 } else {
                     let check = false;
                     for (let item of getUserTo.ref_to_users) {
-                        console.log("236 line", item.id.toString() == getUser._id.toString(), typeof item.id, typeof getUser._id, item.id, getUser._id)
+                        // console.log("236 line", item.id.toString() == getUser._id.toString(), typeof item.id, typeof getUser._id, item.id, getUser._id)
                         if (item.id.toString() == getUser._id.toString()) {
                             item.status = 'active'
                             check = true
@@ -563,7 +563,7 @@ class users {
                             id: getUser._id,
                         })
                     }
-                    console.log(getUserTo)
+                    // console.log(getUserTo)
                     data = await UsersModel.findOneAndUpdate({ Referral_id: referral_code }, { $set: getUserTo }, { new: true })
                 }
                 if (data) {
@@ -599,7 +599,7 @@ class users {
             let { _id, status } = req.body
             let data
 
-            console.log("req.body", req.body)
+            // console.log("req.body", req.body)
             data = await UsersModel.findOne({ _id: _id })
             // console.log(data)
             // let dt = moment().utcOffset("+05:30").format("DD.MM.YYYY HH.mm.ss");
@@ -792,7 +792,7 @@ class users {
                     setData.userId = req.body.userId
                     query.userId = req.body.userId
                 }
-                console.log("query", query, "setData", setData)
+                // console.log("query", query, "setData", setData)
                 data = await FcmTokenModel.findOne(query);
                 if (data) {
                     data = await FcmTokenModel.findOneAndUpdate(query, { $set: setData }, { new: true });
@@ -816,9 +816,9 @@ class users {
             if (!reciverId || !senderId) {
                 return res.json({ code: 400, success: false, message: "Perameter is missing", })
             } else {
-                console.log("senderId, ..reciverId..", senderId, reciverId)
+                // console.log("senderId, ..reciverId..", senderId, reciverId)
                 let fcmTokenData = await FcmTokenModel.findOne({ userId: reciverId }).populate('userId').lean()
-                console.log("fcmTokenData", fcmTokenData)
+                // console.log("fcmTokenData", fcmTokenData)
                 let senderDetails = await UsersModel.findOne({ _id: senderId }).lean()
                 if (fcmTokenData) {
                     let message = {
