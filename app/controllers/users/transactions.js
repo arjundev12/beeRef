@@ -30,7 +30,6 @@ class users {
                                 month: { $month: "$_id" },
                                 day: { $dayOfMonth: "$_id" }
                             },
-
                         },
                     },
                     totalAmount: {
@@ -41,10 +40,13 @@ class users {
                     }
                 }
             },])
-            res.json({ code: 200, success: true, message: "Get list successfully ", data: getUser })
+            let data = {}
+            data.transaction= getUser
+            data.wallet = await walletModel.findOne({user_id:req.body.toId })
+            res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
         } catch (error) {
             console.log("Error in catch", error)
-            res.status(500).json({ success: false, message: "Somthing went wrong", })
+            res.json({ code: 404,success: false, message: "Data not found", })
         }
     }
 
