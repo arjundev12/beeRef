@@ -30,6 +30,9 @@ class Common {
                 lean: true,
             }
             let query = {}
+            if (req.body.searchData ){
+                query = { $or: [{ title: { $regex: req.body.searchData, $options: "i" } }, { content: { $regex: req.body.searchData, $options: "i" } }] }
+            }
             let data = await NewsModel.paginate(query, options)
             // console.log("news", data)
             res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
@@ -63,6 +66,9 @@ class Common {
                 lean: true,
             }
             let query = {}
+            if (req.body.searchData ){
+                query = { $or: [{ title: { $regex: req.body.searchData, $options: "i" } }, { content: { $regex: req.body.searchData, $options: "i" } }] }
+            }
             let data = await BlogModel.paginate(query, options)
             // console.log("news", data)
             res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
