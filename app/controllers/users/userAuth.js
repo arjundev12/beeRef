@@ -141,7 +141,7 @@ class users {
 
         } catch (error) {
             console.log("Error in catch", error)
-            res.json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Somthing went wrong", })
         }
 
     }
@@ -180,7 +180,7 @@ class users {
 
         } catch (error) {
             console.log("error in catch", error)
-            res.json({ success: false, message: "Internal server error", data: null })
+            res.json({ success: false, message: "Somthing went wrong", data: null })
         }
 
     }
@@ -207,7 +207,7 @@ class users {
             }
         } catch (error) {
             console.log("Error in catch", error)
-            res.json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Somthing went wrong", })
         }
     }
     async UpdateProfile(req, res) {
@@ -264,7 +264,7 @@ class users {
             if (error.codeName == 'DuplicateKey') {
                 res.json({ code: 400, success: false, message: `${Object.keys(error.keyValue)} is already exist`, })
             } else {
-                res.json({ code: 500, success: false, message: "Internal server error", })
+                res.json({ code: 500, success: false, message: "Somthing went wrong", })
             }
         }
     }
@@ -284,7 +284,7 @@ class users {
             }
 
         } catch (error) {
-            res.json({ code: 400, success: false, message: "Internal server error", })
+            res.json({ code: 400, success: false, message: "Somthing went wrong", })
         }
     }
     async _getUserData(id) {
@@ -349,7 +349,7 @@ class users {
             res.json({ code: 200, success: true, message: 'uploade successfully', data: newData })
         } catch (error) {
             console.log("Error in catch", error)
-            res.json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Somthing went wrong", })
         }
     }
 
@@ -387,7 +387,7 @@ class users {
             res.json({ code: 200, success: true, message: 'get successfully', data: data })
         } catch (error) {
             console.log("Error in catch", error)
-            res.json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Somthing went wrong", })
         }
     }
     async forgotPassword(req, res) {
@@ -411,7 +411,7 @@ class users {
 
         } catch (error) {
             console.log("Error in catch", error)
-            res.json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Somthing went wrong", })
         }
     }
     async verifyForgot(req, res) {
@@ -432,7 +432,7 @@ class users {
 
         } catch (error) {
             console.log("Error in catch", error)
-            res.json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Somthing went wrong", })
         }
     }
     async setForgotPass(req, res) {
@@ -460,7 +460,7 @@ class users {
 
         } catch (error) {
             console.log("Error in catch", error)
-            res.json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Somthing went wrong", })
         }
     }
     async _calculateMiningRate(team){
@@ -522,7 +522,7 @@ class users {
             res.json({ code: 200, success: true, message: 'uploade successfully', data: data })
         } catch (error) {
             console.log("Error in catch", error)
-            res.json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Somthing went wrong", })
         }
     }
     async submitReferral(req, res) {
@@ -591,7 +591,7 @@ class users {
             }
         } catch (error) {
             console.log("Error in catch", error)
-            res.json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Somthing went wrong", })
         }
     }
     async minnerActivity(req, res) {
@@ -639,7 +639,7 @@ class users {
 
         } catch (error) {
             console.log("Error in catch", error)
-            res.json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Somthing went wrong", })
         }
     }
     async _deactivateMiner(_id) {
@@ -713,7 +713,7 @@ class users {
             }
         } catch (error) {
             console.log("Error in catch chekUserName", error)
-            res.json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Somthing went wrong", })
         }
     }
     // redit_user_name
@@ -727,7 +727,7 @@ class users {
             }
         } catch (error) {
             console.log("Error in catch chekUserName", error)
-            res.json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Somthing went wrong", })
         }
     }
     async resetPassword(req, res) {
@@ -749,7 +749,7 @@ class users {
             }
         } catch (error) {
             console.log("Error in catch chekUserName", error)
-            res.json({ success: false, message: "Internal server error", })
+            res.json({ success: false, message: "Somthing went wrong", })
         }
     }
     async _addNumberReward(_id) {
@@ -807,7 +807,7 @@ class users {
 
         } catch (error) {
             console.log("error in catch", error)
-            res.json({ code: 500, success: false, message: "Internal server error", })
+            res.json({ code: 500, success: false, message: "Somthing went wrong", })
         }
     }
     async sendNotificationToUser(req, res) {
@@ -846,7 +846,7 @@ class users {
             }
         } catch (error) {
             console.log("error in catch", error)
-            res.json({ code: 400, success: false, message: "Internal server error", })
+            res.json({ code: 400, success: false, message: "Somthing went wrong", })
         }
     }
 

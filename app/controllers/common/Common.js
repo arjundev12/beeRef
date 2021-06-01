@@ -35,7 +35,7 @@ class Common {
             res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
         } catch (error) {
             console.log("Error in catch", error)
-            res.status(500).json({ success: false, message: "Internal server error", })
+            res.status(500).json({ success: false, message: "Somthing went wrong", })
         }
     }
 
@@ -51,7 +51,7 @@ class Common {
                }
         } catch (error) {
             console.log("Error in catch", error)
-            res.status(500).json({ success: false, message: "Internal server error", })
+            res.status(500).json({ success: false, message: "Somthing went wrong", })
         }
     }
     async getBlogs(req, res) {
@@ -68,7 +68,7 @@ class Common {
             res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
         } catch (error) {
             console.log("Error in catch", error)
-            res.status(500).json({ success: false, message: "Internal server error", })
+            res.status(500).json({ success: false, message: "Somthing went wrong", })
         }
     }
     async viewBlogs(req, res) {
@@ -84,7 +84,7 @@ class Common {
            
         } catch (error) {
             console.log("Error in catch", error)
-            res.status(500).json({ success: false, message: "Internal server error", })
+            res.status(500).json({ success: false, message: "Somthing went wrong", })
         }
     }
     async _uploadBase64image(base64,child_path) {

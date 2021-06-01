@@ -25,7 +25,7 @@ class users {
             res.json({ code: 200, success: true, message: 'Get successfully', data: data })
         } catch (error) {
             console.log("Error in catch", error)
-            res.status(500).json({ success: false, message: "Internal server error", })
+            res.json({code: 500, success: false, message: "Somthing went wrong", })
         }
     }
 

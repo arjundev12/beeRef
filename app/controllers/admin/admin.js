@@ -56,9 +56,9 @@ class adminAuth {
                 user_type: 'user'
             }
             let getUser = await UsersModel.paginate(query, options)
-                // { name: 1, user_type: 1, minner_Activity: 1, createdAt: 1 }).lean()
+            // { name: 1, user_type: 1, minner_Activity: 1, createdAt: 1 }).lean()
             // console.log("getUser", getUser)
-            res.json({ code: 200, success: true, message: "Get list successfully ",  data: getUser })
+            res.json({ code: 200, success: true, message: "Get list successfully ", data: getUser })
         } catch (error) {
             console.log("Error in catch", error)
             res.status(500).json({ success: false, message: "Internal server error", })
@@ -74,11 +74,25 @@ class adminAuth {
                 lean: true,
                 // select: 'name user_type minner_Activity createdAt',
             }
-            let query = { }
+            let query = {}
+
+            if (req.body.type && req.body.type != "") {
+                query.type = req.body.type
+            } if (req.body.toId && req.body.toId != "") {
+                query.to_id = req.body.toId
+            } if (req.body.todayDate && req.body.todayDate != "") {
+                query.createdAt = { "$gte": new Date(req.body.todayDate).toISOString() }// + "T00:00:00Z" 
+                query.createdAt["$lte"] = new Date(req.body.todayDate).toISOString()// + "T12:00:00Z"
+            } if (req.body.toDate && req.body.toDate != "") {
+                query.createdAt = { "$lte": req.body.toDate + "T12:00:00Z" }
+            } if (req.body.fromDate && req.body.fromDate != "") {
+                query.createdAt["$gte"] = new Date(req.body.fromDate)// + "T00:00:00Z"
+            } if (req.body.sort && req.body.sort != "") {
+                options.sort = req.body.sort
+            }
+            console.log("options", options)
             let getUser = await TransactionModal.paginate(query, options)
-                // { name: 1, user_type: 1, minner_Activity: 1, createdAt: 1 }).lean()
-            // console.log("getUser", getUser)
-            res.json({ code: 200, success: true, message: "Get list successfully ",  data: getUser })
+            res.json({ code: 200, success: true, message: "Get list successfully ", data: getUser })
         } catch (error) {
             console.log("Error in catch", error)
             res.status(500).json({ success: false, message: "Internal server error", })

@@ -9,7 +9,7 @@ const user_transactions = require('../../controllers/users/transactions');
 
 const validationData= require('../../middlewares/FrontendValidator');
 
-router.post('/get-transactions',user_transactions.getTransaction);
+router.post('/get-transactions',user_transactions.getTransactionGroupWise);
 
 
 
