@@ -330,20 +330,16 @@ class users {
                 }
             }
             let total_minner = arrayList.length
-            let active_minner = 0
-            let inactive_minner = 0
-            for (let item of arrayList) {
-                if (item.minner_Activity == true) {
-                    active_minner++
-                } else {
-                    inactive_minner++
-                }
-            }
-            // console.log("active_minner,,,,,,", active_minner, inactive_minner)
+            arrayList.sort((a, b) => {
+                return b.team_size-a.team_size;
+            });
+            let count = arrayList.filter(val => {
+                return val.minner_Activity == true
+            })
             let newData = {
                 team: arrayList,
-                active_minner: active_minner,
-                inactive_minner: inactive_minner,
+                active_minner: count.length,
+                inactive_minner: total_minner-count.length,
                 total_minner: total_minner
             }
             res.json({ code: 200, success: true, message: 'uploade successfully', data: newData })
