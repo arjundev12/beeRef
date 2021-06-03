@@ -282,7 +282,7 @@ class FrontEntValidator {
     
     async submitReferral (req, res, next) {
         // return next();
-        if (Object.keys(req.body).length <=2) {
+        if (Object.keys(req.body).length <=3) {
                 req.checkBody({
                     referral_code: {
                         notEmpty: true,
@@ -291,6 +291,10 @@ class FrontEntValidator {
                     username: {
                         notEmpty: true,
                         errorMessage: { "field_name": "username", "error_msg": 'username is required' },
+                    },
+                    email: {
+                        notEmpty: true,
+                        errorMessage: { "field_name": "email", "error_msg": 'email is required' },
                     }
                     
                 })
