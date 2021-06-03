@@ -46,7 +46,7 @@ router.post('/check-reddit-username',validationData.chekRedditUserName, user_con
 router.post('/reset-password',validationData.resetPassword, user_controller.resetPassword)
 
 router.post('/set-token', user_controller.setFcmToken)
-router.post('/send-Notification', user_controller.sendNotificationToUser)
+// router.post('/send-Notification', user_controller.sendNotificationToUser)
 
 
 

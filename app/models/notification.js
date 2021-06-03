@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var mongoosePaginate = require('mongoose-paginate');
+const moment = require("moment");
 const Schema = mongoose.Schema;
 var notificationSchema = new Schema({
     title: {
@@ -22,8 +23,15 @@ var notificationSchema = new Schema({
     viewer_id: {
         type: { any: [Schema.Types.Mixed] }
     },
+    view_status: {
+        type: Boolean,
+        default : false
+    },
+    time: {
+        type: String,
+    }
 
-}, { versionKey: false });
+}, { versionKey: false,timestamps: true });
 
 notificationSchema.plugin(mongoosePaginate);
 let NotificationModel = mongoose.model('notification', notificationSchema);

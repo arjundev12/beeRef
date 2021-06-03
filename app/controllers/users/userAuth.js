@@ -77,7 +77,7 @@ class users {
             let stoken
             let error
             let { name, email, password, login_type, social_media_key } = req.body
-            let username = email.substring(0, email.lastIndexOf("@"));
+            // let username = email.substring(0, email.lastIndexOf("@"));
             let referral_id = await this._generateRefID()
             let getUser
             // console.log("logintype ", login_type, social_media_key)
@@ -91,7 +91,7 @@ class users {
                     const hash = bcrypt.hashSync(password, salt);
                     saveData = new UsersModel({
                         name: name,
-                        username: username,
+                        username: "",
                         email: email,
                         password: hash,
                         login_type: login_type,
@@ -529,8 +529,8 @@ class users {
         try {
             let updateData
             let data
-            let { referral_code, username } = req.body
-            let getUser = await UsersModel.findOne({ username: username }).lean()
+            let { referral_code, username, email } = req.body
+            let getUser = await UsersModel.findOne({ email: email }).lean()
             if (getUser.submit_referral == true) {
                 res.json({ code: 404, success: false, message: 'you are already submit referral code' })
             } else {
@@ -567,11 +567,12 @@ class users {
                     data = await UsersModel.findOneAndUpdate({ Referral_id: referral_code }, { $set: getUserTo }, { new: true })
                 }
                 if (data) {
-                    await UsersModel.findOneAndUpdate({ username: username },
+                    await UsersModel.findOneAndUpdate({  email: email },
                         {
                             $set: {
                                 from_referral_id: data._id,
-                                submit_referral: true
+                                submit_referral: true,
+                                username: username
                             }
                         }
                     ).lean()
