@@ -12,7 +12,7 @@ const validationData= require('../../middlewares/FrontendValidator');
 router.post('/send-notification',user_notification.sendNotificationToUser);
 router.get('/get-notification',user_notification.getNotificationById);
 router.post('/view-notification',user_notification.viewNotification);
-// router.post('/send-Notification',user_notification.sendNotificationToUser);
+router.get('/count-Notification',user_notification.getCountNotification);
 
 
 
