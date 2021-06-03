@@ -680,10 +680,18 @@ class users {
                                 }
                                 let data = {
                                     fromName: "Admin",
-                                    toName: data2.userId.name ? data2.userId.name : "",
+                                    toName: data2.userId ? data2.userId.name : "",
                                     toId :data2.userId._id,
                                     fromId: "",
                                 }
+                                let saveNotification = new NotificationModel({
+                                    title: message.title,
+                                    toId: data.toId,
+                                    fromId: '60a60bf3630a7e4e00aee2fb',
+                                    type: 'Remember',
+                                    time: message.time
+                                })
+                                saveNotification.save()
                                 Notification._sendPushNotification(message, data2.fcmToken, data)
                             })
                         }).catch(err => console.log("err", err))
@@ -841,6 +849,8 @@ class users {
                  RankerOne : arrayList[0],
                  RankerTwo : arrayList[1],
                  RankerThree : arrayList[2],
+                //  active_minner: count.length,
+                 current_rank : count.length
             }
             res.json({ code: 200, success: true, message: 'uploade successfully', data: newData })
         } catch (error) {
