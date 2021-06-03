@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 const authConfig = require('../../authConfig/auth')
 const walletModel = require('../../models/wallet')
-const TransactionModel = require('../../models/transactions')
+const TransactionModel = require('../../models/transactions');
 class users {
     constructor() {
         return {
@@ -41,15 +41,52 @@ class users {
                 }
             },])
             let data = {}
-            data.transaction= getUser
-            data.wallet = await walletModel.findOne({user_id:req.body.toId })
+            for (let iterator of getUser) {
+                iterator.totalAmount = iterator.totalAmount.toString()
+                iterator.COUNT =   iterator.COUNT.toString()
+                
+            }
+            data.transaction = getUser
+            data.wallet
+            let walletData = await walletModel.findOne({ user_id: req.body.toId }).populate('user_id', 'ref_to_users').lean()
+            let miningRate =0
+            if (walletData.user_id.ref_to_users) {
+                for (let item of walletData.user_id.ref_to_users) {
+                    let userData = await this._getUserData(item.id)
+                    if (userData.minner_Activity == true) {
+                        miningRate += 0.0416666666666667
+                    }
+
+                }
+            }
+            walletData.total_amount = walletData.total_amount.toString()
+            walletData.current_mining_rate = miningRate.toString()
+            walletData.current_time = moment().utcOffset("+05:30").format("DD.MM.YYYY HH.mm.ss")
+            delete walletData.user_id
+            data.wallet = walletData
             res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
         } catch (error) {
             console.log("Error in catch", error)
-            res.json({ code: 404,success: false, message: "Data not found", })
+            res.json({ code: 404, success: false, message: "Data not found", })
         }
     }
-
+    async _getUserData(id) {
+        try {
+            let data = await UsersModel.findOne({ _id: id }, {
+                // // ref_to_users: 0,
+                // password: 0,
+                // block_user: 0,
+                // user_type: 0,
+                // is_email_verify: 0,
+                // is_number_verify: 0,
+                // is_super_admin: 0,
+                minner_Activity: 1
+            }).lean()
+            return data
+        } catch (error) {
+            console.log("Error in catch", error)
+        }
+    }
 
     // [
     //     { $project: { day: { $dayOfMonth: '$createdAt' } } },
