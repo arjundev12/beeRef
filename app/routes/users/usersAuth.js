@@ -21,6 +21,8 @@ router.put('/minner-update',user_controller.minnerActivity)
 router.put('/verify-otp', validationData.verifyOtp, user_controller.verifyOtp);
 router.post('/upload-image', user_controller.uploadeImage)
 router.get('/dashboard', user_controller.getDashboard)
+router.get('/leaderboard', user_controller.getLeaderboard)
+
 
 
 

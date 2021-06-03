@@ -68,6 +68,11 @@ var UsersSchema = new Schema({
     values: ['1', '0'],
     default: '0'
   },
+  is_complete_kyc: {
+    type: String,
+    values: ['1', '0'],
+    default: '0'
+  },
   current_rank: {
     type: String,
     default: '0'

@@ -32,6 +32,7 @@ class users {
             chekRedditUserName: this.chekRedditUserName.bind(this),
             resetPassword: this.resetPassword.bind(this),
             setFcmToken: this.setFcmToken.bind(this),
+            getLeaderboard: this.getLeaderboard.bind(this)
         }
     }
 
@@ -335,6 +336,7 @@ class users {
             let count = arrayList.filter(val => {
                 return val.minner_Activity == true
             })
+            // y = arrayList.splice(3);
             let newData = {
                 team: arrayList,
                 active_minner: count.length,
@@ -809,7 +811,43 @@ class users {
             res.json({ code: 500, success: false, message: "Somthing went wrong", })
         }
     }
-    
+    async getLeaderboard(req, res) {
+        try {
+            let data
+            let _id = req.query._id
+            data = await UsersModel.findOne({ _id: _id }, { ref_to_users: 1 }).lean()
+            let arrayList = [];
+            if (data.ref_to_users) {
+                for (let item of data.ref_to_users) {
+                    let userData = {}
+                    userData = await this._getUserData(item.id)
+                    userData.status = item.status
+                    userData.team_size = userData.ref_to_users ? userData.ref_to_users.length : 0
+                    delete userData.ref_to_users
+                    arrayList.push(userData)
+                }
+            }
+            let total_minner = arrayList.length
+            arrayList.sort((a, b) => {
+                return b.team_size-a.team_size;
+            });
+            let count = arrayList.filter(val => {
+                return val.minner_Activity == true
+            })
+           let secondArray = arrayList.splice(3);
+
+            let newData = {
+                team: secondArray,
+                 RankerOne : arrayList[0],
+                 RankerTwo : arrayList[1],
+                 RankerThree : arrayList[2],
+            }
+            res.json({ code: 200, success: true, message: 'uploade successfully', data: newData })
+        } catch (error) {
+            console.log("Error in catch", error)
+            res.json({ success: false, message: "Somthing went wrong", })
+        }
+    }
     async uploadKYCDoc(req, res) {
         try {
 
