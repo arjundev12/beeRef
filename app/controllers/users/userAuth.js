@@ -32,7 +32,6 @@ class users {
             chekRedditUserName: this.chekRedditUserName.bind(this),
             resetPassword: this.resetPassword.bind(this),
             setFcmToken: this.setFcmToken.bind(this),
-            sendNotificationToUser: this.sendNotificationToUser.bind(this)
         }
     }
 
@@ -703,6 +702,9 @@ class users {
     async chekUserName(req, res) {
         try {
             let getUser = await UsersModel.findOne({ username: req.body.username }).lean()
+            // let getUser = await UsersModel.findOne({ username: { $regex: /arjun5/i } } ).lean()
+            // { foo: /^bar$/i } 
+            console.log("getUser", getUser)
             if (getUser) {
                 res.json({ code: 400, success: false, message: 'Username is not available', data: getUser.username })
             } else {
@@ -807,46 +809,36 @@ class users {
             res.json({ code: 500, success: false, message: "Somthing went wrong", })
         }
     }
-    async sendNotificationToUser(req, res) {
+    
+    async uploadKYCDoc(req, res) {
         try {
-            let { senderId, reciverId } = req.body
-            if (!reciverId || !senderId) {
-                return res.json({ code: 400, success: false, message: "Perameter is missing", })
-            } else {
-                // console.log("senderId, ..reciverId..", senderId, reciverId)
-                let fcmTokenData = await FcmTokenModel.findOne({ userId: reciverId }).populate('userId').lean()
-                // console.log("fcmTokenData", fcmTokenData)
-                let senderDetails = await UsersModel.findOne({ _id: senderId }).lean()
-                if (fcmTokenData) {
-                    let message = {
-                        title: "Press the mining button for earning",
-                        time: moment().utcOffset("+05:30").format("DD.MM.YYYY HH.mm.ss")
-                    }
-                    let saveNotification = new NotificationModel({
-                        title: message.title,
-                        toId: reciverId,
-                        fromId: senderId,
-                        type: 'Remember'
-                    })
-                    await saveNotification.save()
-                    let data = {
-                        fromName: senderDetails ? senderDetails.name : "",
-                        toName: fcmTokenData.userId.name ? fcmTokenData.userId.name : "",
-                        toId : reciverId,
-                        fromId: senderId,
-                    }
-                    let sendnotification = await Notification._sendPushNotification(message, fcmTokenData.fcmToken, data)
-                    res.json({ code: 200, success: true, message: "Notification send successfully", })
-                } else {
-                    res.json({ code: 400, success: true, message: "Fcm token is not updated", })
+
+            if (req.body.fcmToken) {
+                let data
+                let query = { status: 'active' }
+                let setData = { fcmToken: req.body.fcmToken }
+                if (req.body.userId) {
+                    setData.userId = req.body.userId
+                    query.userId = req.body.userId
                 }
+                // console.log("query", query, "setData", setData)
+                data = await FcmTokenModel.findOne(query);
+                if (data) {
+                    data = await FcmTokenModel.findOneAndUpdate(query, { $set: setData }, { new: true });
+                } else {
+                    let saveData = new FcmTokenModel(setData)
+                    data = await saveData.save();
+                }
+                res.json({ code: 200, success: true, message: "Token set successfully", data: data })
+            } else {
+                res.json({ code: 403, success: false, message: "Fcm token is required", })
             }
+
         } catch (error) {
             console.log("error in catch", error)
-            res.json({ code: 400, success: false, message: "Somthing went wrong", })
+            res.json({ code: 500, success: false, message: "Somthing went wrong", })
         }
     }
-
 }
 
 module.exports = new users();

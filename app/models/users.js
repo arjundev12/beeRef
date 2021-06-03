@@ -9,9 +9,6 @@ var UsersSchema = new Schema({
   username: {
     type: String,
     trim: true,
-    index: true,
-    unique: true ,
-    require: true
   },
   reddit_username: {
     type: String,
@@ -44,7 +41,7 @@ var UsersSchema = new Schema({
   },
   country: {
     type: String,
-    trim: true
+    trim: true,
   },
   user_type: {
     type: String,
@@ -57,6 +54,16 @@ var UsersSchema = new Schema({
     default: '0'
   },
   is_number_verify: {
+    type: String,
+    values: ['1', '0'],
+    default: '0'
+  },
+  is_facebook: {
+    type: String,
+    values: ['1', '0'],
+    default: '0'
+  },
+  is_apple: {
     type: String,
     values: ['1', '0'],
     default: '0'
