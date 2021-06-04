@@ -67,21 +67,8 @@ class users {
             if (!userId) {
                 return res.json({ code: 400, success: false, message: "userId is required", })
             } else {
-                let getData = await NotificationModel.find({toId: userId}).populate('fromId', 'name')
-                res.json({ code: 200, success: true, message: "Get notification successfully", getData })
-            }
-        } catch (error) {
-            console.log("error in catch", error)
-            res.json({ code: 400, success: false, message: "Somthing went wrong", })
-        }
-    }
-    async getNotificationById(req, res) {
-        try {
-            let userId = req.query.userId
-            if (!userId) {
-                return res.json({ code: 400, success: false, message: "userId is required", })
-            } else {
-                let getData = await NotificationModel.find({toId: userId}).populate('fromId', 'name')
+                let getData = await NotificationModel.find({toId: userId}).populate('fromId', 'name profile_pic minner_Activity')
+                await NotificationModel.updateMany({toId: userId},{$set:{view_status: true}})
                 res.json({ code: 200, success: true, message: "Get notification successfully", getData })
             }
         } catch (error) {
