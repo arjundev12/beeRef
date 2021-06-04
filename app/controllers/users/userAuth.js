@@ -823,6 +823,7 @@ class users {
         try {
             let data
             let _id = req.query._id
+            console.log("hiiiiiiiiiiiii", _id)
             data = await UsersModel.findOne({ _id: _id }, { ref_to_users: 1 }).lean()
             let arrayList = [];
             if (data.ref_to_users) {
