@@ -11,6 +11,7 @@ const authConfig = require('../../authConfig/auth');
 const Constants = require('../../utilities/constants')
 const FcmTokenModel = require('../../models/fcmToken')
 const NotificationModel = require('../../models/notification')
+const DocumentsModel = require('../../models/userDocument')
 const Notification = require('../../middlewares/notification')
 class users {
     constructor() {
@@ -868,30 +869,21 @@ class users {
     async uploadKYCDoc(req, res) {
         try {
 
-            if (req.body.fcmToken) {
-                let data
-                let query = { status: 'active' }
-                let setData = { fcmToken: req.body.fcmToken }
-                if (req.body.userId) {
-                    setData.userId = req.body.userId
-                    query.userId = req.body.userId
-                }
-                // console.log("query", query, "setData", setData)
-                data = await FcmTokenModel.findOne(query);
-                if (data) {
-                    data = await FcmTokenModel.findOneAndUpdate(query, { $set: setData }, { new: true });
-                } else {
-                    let saveData = new FcmTokenModel(setData)
-                    data = await saveData.save();
-                }
-                res.json({ code: 200, success: true, message: "Token set successfully", data: data })
+            if (req.body.userId) {
+               let getData = await DocumentsModel.findOne({owner:req.body.userId }).lean()
+                 if(getData){
+                     
+                 }
+                res.json({ code: 200, success: true, message: 'uploade successfully', data: path2 })
+            }
+            else if (req.body.profile_pic == "") {
+                res.json({ code: 200, success: true, message: 'uploade successfully', data: "" })
             } else {
-                res.json({ code: 403, success: false, message: "Fcm token is required", })
+                res.json({ code: 400, success: false, message: "profile_pic is require", })
             }
 
         } catch (error) {
-            console.log("error in catch", error)
-            res.json({ code: 500, success: false, message: "Somthing went wrong", })
+            res.json({ code: 400, success: false, message: "Somthing went wrong", })
         }
     }
 }

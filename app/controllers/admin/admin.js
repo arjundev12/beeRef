@@ -70,7 +70,25 @@ class adminAuth {
             res.status(500).json({ success: false, message: "Internal server error", })
         }
     }
-
+    async getTotal(transaction_type ){
+        let getUser 
+        try {
+             getUser = await TransactionModal.aggregate([
+            {
+                $group :{
+                    _id: '$transaction_type',
+                    totalAmount: {
+                        $sum: "$amount"
+                    },
+                }
+            }
+        ])
+        console.log("getUsertotal amount",getUser )
+        } catch (error) {
+            console.log("error in catch 88",error ) 
+        }
+         return getUser
+    }
     async getTransaction(req, res) {
         try {
             let options = {
@@ -81,9 +99,16 @@ class adminAuth {
                 // select: 'name user_type minner_Activity createdAt',
             }
             let query = {}
+            let total_amount
 
             if (req.body.type && req.body.type != "") {
                 query.type = req.body.type
+            }
+            if (req.body.transaction_type && req.body.transaction_type != "") {
+                query.transaction_type = req.body.transaction_type
+                console.log("req.body.transaction_typereq.body.transaction_type", req.body.transaction_type)
+                total_amount= await this.getTotal()
+
             }
              if (req.body.toId && req.body.toId != "") {
                 // { title: { $regex: searchData, $options: "i" }
@@ -103,6 +128,7 @@ class adminAuth {
                 options.sort = req.body.sort
             }
             let getUser = await TransactionModal.paginate(query, options)
+            getUser.total_amount = total_amount
             res.json({ code: 200, success: true, message: "Get list successfully ", data: getUser })
         } catch (error) {
             console.log("Error in catch", error)

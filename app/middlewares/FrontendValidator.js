@@ -240,7 +240,7 @@ class FrontEntValidator {
     }
     async update (req, res, next) {
         // return next();
-        if (Object.keys(req.body).length <=8) {
+        if (Object.keys(req.body).length <=11) {
                 req.checkBody({
                     _id: {
                         notEmpty: true,
