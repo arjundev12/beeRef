@@ -826,7 +826,9 @@ class users {
             console.log("hiiiiiiiiiiiii", _id)
             data = await UsersModel.findOne({ _id: _id }, { ref_to_users: 1 }).lean()
             let arrayList = [];
-            if (data.ref_to_users) {
+            if (!data){
+                res.json({ code: 404, success: false, message: 'Data not found'})
+            }else if (data.ref_to_users) {
                 for (let item of data.ref_to_users) {
                     let userData = {}
                     userData = await this._getUserData(item.id)
@@ -835,25 +837,29 @@ class users {
                     delete userData.ref_to_users
                     arrayList.push(userData)
                 }
-            }
-            let total_minner = arrayList.length
-            arrayList.sort((a, b) => {
-                return b.team_size - a.team_size;
-            });
-            let count = arrayList.filter(val => {
-                return val.minner_Activity == true
-            })
-            let secondArray = arrayList.splice(3);
 
-            let newData = {
-                team: secondArray,
-                RankerOne: arrayList.length > 0 ? arrayList[0] : "",
-                RankerTwo: arrayList.length > 1 ? arrayList[1] : "",
-                RankerThree: arrayList.length > 2 ? arrayList[2] : "",
-                //  active_minner: count.length,
-                current_rank: count.length
+                let total_minner = arrayList.length
+                arrayList.sort((a, b) => {
+                    return b.team_size - a.team_size;
+                });
+                let count = arrayList.filter(val => {
+                    return val.minner_Activity == true
+                })
+                let secondArray = arrayList.splice(3);
+    
+                let newData = {
+                    team: secondArray,
+                    RankerOne: arrayList.length > 0 ? arrayList[0] : "",
+                    RankerTwo: arrayList.length > 1 ? arrayList[1] : "",
+                    RankerThree: arrayList.length > 2 ? arrayList[2] : "",
+                    //  active_minner: count.length,
+                    current_rank: count.length
+                }
+                res.json({ code: 200, success: true, message: 'Get data successfully', data: newData })
+            }else{
+                res.json({ code: 404, success: false, message: 'Data not found'})
             }
-            res.json({ code: 200, success: true, message: 'uploade successfully', data: newData })
+           
         } catch (error) {
             console.log("Error in catch", error)
             res.json({ success: false, message: "Somthing went wrong", })
