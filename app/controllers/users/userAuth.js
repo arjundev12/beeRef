@@ -225,30 +225,30 @@ class users {
             // console.log("getUser", getUser)
             if (getUser) {
                 let updateData = {}
-                if (name && name!="") {
+                if (name && name != "") {
                     updateData.name = name
                 }
-                if (username&& username!="") {
+                if (username && username != "") {
                     updateData.username = username
                 }
-                if (number && number!="") {
+                if (number && number != "") {
                     if (getUser.number == "") {
                         this._addNumberReward(getUser._id)
                     }
                     updateData.number = number
                 }
-                if (country && country!="") {
+                if (country && country != "") {
                     updateData.country = country
                 }
-                if (profile_pic&& profile_pic!="") {
+                if (profile_pic && profile_pic != "") {
                     updateData.profile_pic = profile_pic
                 }
-                if (minner_Activity && minner_Activity!="") {
+                if (minner_Activity && minner_Activity != "") {
                     updateData.minner_Activity = minner_Activity
                     // this._activateMiner(_id)
                 }
 
-                if (reddit_username && reddit_username!="") {
+                if (reddit_username && reddit_username != "") {
                     if (getUser.reddit_username == "") {
                         this._addRedditReward(getUser._id)
                     }
@@ -277,7 +277,7 @@ class users {
                 var path2 = data.replace(/\\/g, "/");
                 res.json({ code: 200, success: true, message: 'uploade successfully', data: path2 })
             }
-            else if(req.body.profile_pic ==""){ 
+            else if (req.body.profile_pic == "") {
                 res.json({ code: 200, success: true, message: 'uploade successfully', data: "" })
             } else {
                 res.json({ code: 400, success: false, message: "profile_pic is require", })
@@ -331,7 +331,7 @@ class users {
             }
             let total_minner = arrayList.length
             arrayList.sort((a, b) => {
-                return b.team_size-a.team_size;
+                return b.team_size - a.team_size;
             });
             let count = arrayList.filter(val => {
                 return val.minner_Activity == true
@@ -340,7 +340,7 @@ class users {
             let newData = {
                 team: arrayList,
                 active_minner: count.length,
-                inactive_minner: total_minner-count.length,
+                inactive_minner: total_minner - count.length,
                 total_minner: total_minner
             }
             res.json({ code: 200, success: true, message: 'uploade successfully', data: newData })
@@ -460,7 +460,7 @@ class users {
             res.json({ success: false, message: "Somthing went wrong", })
         }
     }
-    async _calculateMiningRate(team){
+    async _calculateMiningRate(team) {
 
     }
     async getDashboard(req, res) {
@@ -471,7 +471,7 @@ class users {
             ///////////////////get team//////////////
             let team = await UsersModel.findOne({ _id: _id }).lean()
             let arrayList = [];
-            let miningRate =0
+            let miningRate = 0
             let activeminer = 0
             if (team.ref_to_users) {
                 for (let item of team.ref_to_users) {
@@ -480,15 +480,15 @@ class users {
                     userData.team_size = userData.ref_to_users ? userData.ref_to_users.length : 0
                     delete userData.ref_to_users
                     userData.status = item.status
-                    if(userData.minner_Activity== true){
-                        miningRate +=  0.0416666666666667
+                    if (userData.minner_Activity == true) {
+                        miningRate += 0.0416666666666667
                         activeminer += 1
                     }
                     arrayList.push(userData)
-                    
+
                 }
             }
-          
+
             data.team = arrayList.length > 5 ? arrayList.splice(0, 5) : arrayList
             //////////////////get news///////////////////////
             let options = {
@@ -508,11 +508,11 @@ class users {
             wallte.referral_ammount = wallte.referral_ammount.toString()
             wallte.earning_ammount = wallte.earning_ammount.toString()
             wallte.mining_ammount = wallte.mining_ammount.toString()
-            wallte.miningRate = miningRate+ " /per hour",
-            wallte.active_minner= activeminer
-            wallte.total_minner= arrayList.length
+            wallte.miningRate = miningRate + " /per hour",
+                wallte.active_minner = activeminer
+            wallte.total_minner = arrayList.length
 
-            
+
 
             data.wallet = wallte
 
@@ -532,9 +532,9 @@ class users {
                 res.json({ code: 404, success: false, message: 'you are already submit referral code' })
             } else {
                 let getUserTo = await UsersModel.findOne({ Referral_id: referral_code }).lean()
-                if(!getUserTo){
-                    res.json({ code: 404, success: false, message: 'Referral code is invalide' }) 
-                }else if (!getUserTo.ref_to_users) {
+                if (!getUserTo) {
+                    res.json({ code: 404, success: false, message: 'Referral code is invalide' })
+                } else if (!getUserTo.ref_to_users) {
                     updateData = {
                         $addToSet: {
                             ref_to_users: {
@@ -564,7 +564,7 @@ class users {
                     data = await UsersModel.findOneAndUpdate({ Referral_id: referral_code }, { $set: getUserTo }, { new: true })
                 }
                 if (data) {
-                    await UsersModel.findOneAndUpdate({  email: email },
+                    await UsersModel.findOneAndUpdate({ email: email },
                         {
                             $set: {
                                 from_referral_id: data._id,
@@ -681,7 +681,7 @@ class users {
                                 let data = {
                                     fromName: "Admin",
                                     toName: data2.userId ? data2.userId.name : "",
-                                    toId :data2.userId._id,
+                                    toId: data2.userId._id,
                                     fromId: "",
                                 }
                                 let saveNotification = new NotificationModel({
@@ -696,7 +696,7 @@ class users {
                             })
                         }).catch(err => console.log("err", err))
                     }, 1000 * 60 * 1
-                    // 
+                        // 
                     );
                 }
             }
@@ -837,20 +837,20 @@ class users {
             }
             let total_minner = arrayList.length
             arrayList.sort((a, b) => {
-                return b.team_size-a.team_size;
+                return b.team_size - a.team_size;
             });
             let count = arrayList.filter(val => {
                 return val.minner_Activity == true
             })
-           let secondArray = arrayList.splice(3);
+            let secondArray = arrayList.splice(3);
 
             let newData = {
                 team: secondArray,
-                 RankerOne : arrayList[0],
-                 RankerTwo : arrayList[1],
-                 RankerThree : arrayList[2],
+                RankerOne: arrayList.length > 0 ? arrayList[0] : "",
+                RankerTwo: arrayList.length > 1 ? arrayList[1] : "",
+                RankerThree: arrayList.length > 2 ? arrayList[2] : "",
                 //  active_minner: count.length,
-                 current_rank : count.length
+                current_rank: count.length
             }
             res.json({ code: 200, success: true, message: 'uploade successfully', data: newData })
         } catch (error) {
