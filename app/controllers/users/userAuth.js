@@ -33,7 +33,8 @@ class users {
             chekRedditUserName: this.chekRedditUserName.bind(this),
             resetPassword: this.resetPassword.bind(this),
             setFcmToken: this.setFcmToken.bind(this),
-            getLeaderboard: this.getLeaderboard.bind(this)
+            getLeaderboard: this.getLeaderboard.bind(this),
+            uploadKYCDoc: this.uploadKYCDoc.bind(this)
         }
     }
 
@@ -868,21 +869,34 @@ class users {
     }
     async uploadKYCDoc(req, res) {
         try {
+            let { image , userId} = req.body
+            console.log("iiiii", image.length , Array.isArray(image) )
+            // console.log("hiiii", isArray(image))
+            if (Array.isArray(image) && userId) {
 
-            if (req.body.userId) {
-               let getData = await DocumentsModel.findOne({owner:req.body.userId }).lean()
+                let array = []
+                for (const item of req.body.image) {
+                    let data = await commenFunction._uploadBase64Profile(req.body.profile_pic, 'Document')
+                    array.push(data.replace(/\\/g, "/"))
+                }
+                let getData = await DocumentsModel.findOne({owner:userId}).lean()
                  if(getData){
-                     
+                    getData.document.concat(array)
+                    await DocumentsModel.findOneAndUpdate({owner:userId},getData).lean()
+                 }else{
+                     let saveData = new DocumentsModel({
+                        document: array,
+                        owner:userId
+                     })
+                   await saveData.save()
                  }
-                res.json({ code: 200, success: true, message: 'uploade successfully', data: path2 })
-            }
-            else if (req.body.profile_pic == "") {
-                res.json({ code: 200, success: true, message: 'uploade successfully', data: "" })
-            } else {
-                res.json({ code: 400, success: false, message: "profile_pic is require", })
+                res.json({ code: 200, success: true, message: 'uploade successfully' })
+            }else{
+                res.json({ code: 400, success: false, message: 'image array and user_id is required'})  
             }
 
         } catch (error) {
+            console.log("errorr",error )
             res.json({ code: 400, success: false, message: "Somthing went wrong", })
         }
     }
