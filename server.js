@@ -15,9 +15,10 @@ const mongodb=require('./config/mongodb');
 var multer = require('multer');
 var upload = multer();
 
-
 app.use(helmet());
 app.use(bodyParser.json({ limit: "220mb" }));
+app.use(express.json());
+
 app.use(bodyParser.urlencoded({ limit: "220mb", extended: true, parameterLimit: 50000 }));
 app.use(express.urlencoded({
     extended: true

@@ -27,8 +27,8 @@ class Common {
       async getNews(req, res) {
         try {
             let options = {
-                page: req.body.page || 1,
-                limit: req.body.limit || 10,
+                page: Number(req.body.page) || 1,
+                limit: Number(req.body.limit) || 10,
                 sort: { createdAt: -1 },
                 lean: true,
             }
@@ -63,8 +63,8 @@ class Common {
     async getBlogs(req, res) {
         try {
             let options = {
-                page: req.body.page || 1,
-                limit: req.body.limit || 10,
+                page: Number(req.body.page) || 1,
+                limit: Number(req.body.limit) || 10,
                 sort: { createdAt: -1 },
                 lean: true,
             }
@@ -72,6 +72,7 @@ class Common {
             if (req.body.searchData ){
                 query = { $or: [{ title: { $regex: req.body.searchData, $options: "i" } }, { content: { $regex: req.body.searchData, $options: "i" } }] }
             }
+            console.log("req.body.searchData",req.body)
             let data = await BlogModel.paginate(query, options)
             // console.log("news", data)
             res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
