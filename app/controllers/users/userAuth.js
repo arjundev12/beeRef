@@ -509,7 +509,7 @@ class users {
             data.blogs = getblogs.docs
             ////////////////////////////get wallet//////////////////////////
             let wallte = await walletModel.findOne({ user_id: _id }).populate('user_id', 
-            'name username email user_type  minner_Activity last_mining_time reddit_username is_number_verify is_complete_kyc current_rank ').lean()
+            'name username email user_type  minner_Activity last_mining_time reddit_username is_number_verify is_complete_kyc current_rank ref_to_users ').lean()
             wallte.total_amount = wallte.total_amount.toString()
             wallte.referral_ammount = wallte.referral_ammount.toString()
             wallte.earning_ammount = wallte.earning_ammount.toString()
@@ -921,6 +921,13 @@ class users {
             }
             let data = await UsersModel.paginate(query, options)
             // console.log("news", data)
+            for (let iterator of data.docs) {
+                if(iterator.ref_to_users){
+                    iterator.team_size = iterator.ref_to_users.length
+                }else{
+                    iterator.team_size ="0"
+                }
+            }
             res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
         } catch (error) {
             console.log("Error in catch", error)
