@@ -240,6 +240,7 @@ class users {
                         this._addNumberReward(getUser._id)
                     }
                     updateData.number = number
+                    updateData.is_number_verify = "2"
                 }
                 if (country && country != "") {
                     updateData.country = country
@@ -885,10 +886,11 @@ class users {
                  if(getData){
                     getData.document.concat(array)
                     await DocumentsModel.findOneAndUpdate({owner:userId},getData).lean()
+                    await UsersModel.findOneAndUpdate({_id:userId},{$set:{is_complete_kyc:"2"}}).lean()
                  }else{
                      let saveData = new DocumentsModel({
                         document: array,
-                        owner:userId
+                        owner:userId,
                      })
                    await saveData.save()
                  }

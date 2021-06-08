@@ -50,27 +50,27 @@ var UsersSchema = new Schema({
   },
   is_email_verify: {
     type: String,
-    values: ['1', '0'],
+    values: ['1', '0','2'],
     default: '0'
   },
   is_number_verify: {
     type: String,
-    values: ['1', '0'],
+    values: ['1', '0','2'],
     default: '0'
   },
   is_facebook: {
     type: String,
-    values: ['1', '0'],
+    values: ['1', '0','2'],
     default: '0'
   },
   is_apple: {
     type: String,
-    values: ['1', '0'],
+    values: ['1', '0','2'],
     default: '0'
   },
   is_complete_kyc: {
     type: String,
-    values: ['1', '0'],
+    values: ['1', '0','2'],
     default: '0'
   },
   current_rank: {

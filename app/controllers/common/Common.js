@@ -149,9 +149,8 @@ class Common {
                 let data = await CmsModel.findOne({type:req.query.type})
             res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
             }else{
-                res.json({ code: 400, success: false, message: "Id is required "})
+                res.json({ code: 400, success: false, message: "type is required "})
             }
-            
             // console.log("news", data)
         } catch (error) {
             console.log("Error in catch", error)
