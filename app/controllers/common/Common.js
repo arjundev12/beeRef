@@ -4,6 +4,7 @@ const utilities = require('util');
 const config = require('../../../config/config')
 const NewsModel = require('../../models/news')
 const BlogModel = require('../../models/blogs')
+const CmsModel = require('../../models/cms')
 const base64Img = require('base64-img')
 const sharp = require ('sharp')
 const fs = require('fs')
@@ -18,6 +19,7 @@ class Common {
             viewNews: this.viewNews.bind(this),
             _uploadBase64image: this._uploadBase64image.bind(this),
             _validateBase64: this._validateBase64.bind(this),
+            getCms: this.getCms.bind(this)
         }
     }
     
@@ -126,6 +128,17 @@ class Common {
             
         } catch (error) {
             console.error("error in _validateBase64", error)
+        }
+    }
+    async getCms(req, res) {
+        try {
+            let query = {}
+            let data = await CmsModel.find(query)
+            // console.log("news", data)
+            res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
+        } catch (error) {
+            console.log("Error in catch", error)
+            res.status(500).json({ success: false, message: "Somthing went wrong", })
         }
     }
 
