@@ -13,6 +13,7 @@
     mining_ammount: 10, 
     number_reward: 10,
     reddit_reward: 10, 
+    mining_rate : 0.0416,   // earning amount devide by 24 hour 
     recieve :"recieve",
     send :"send",
     mining: "mining",

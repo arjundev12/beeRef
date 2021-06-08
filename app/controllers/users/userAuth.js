@@ -8,11 +8,12 @@ const moment = require("moment");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 const authConfig = require('../../authConfig/auth');
-const Constants = require('../../utilities/constants')
 const FcmTokenModel = require('../../models/fcmToken')
 const NotificationModel = require('../../models/notification')
 const DocumentsModel = require('../../models/userDocument')
 const Notification = require('../../middlewares/notification')
+const Constants = require('../../utilities/constants')
+const ManagePriceModel = require('../../models/managePrice')
 class users {
     constructor() {
         return {
@@ -297,7 +298,7 @@ class users {
                 block_user: 0,
                 user_type: 0,
                 is_email_verify: 0,
-                is_number_verify: 0,
+                // is_number_verify: 0,
                 is_super_admin: 0,
                 number: 0,
             }).lean()
@@ -483,7 +484,7 @@ class users {
                     delete userData.ref_to_users
                     userData.status = item.status
                     if (userData.minner_Activity == true) {
-                        miningRate += 0.0416666666666667
+                        miningRate += 0.0416
                         activeminer += 1
                     }
                     arrayList.push(userData)
@@ -505,7 +506,8 @@ class users {
             let getblogs = await BlogModel.paginate({}, options)
             data.blogs = getblogs.docs
             ////////////////////////////get wallet//////////////////////////
-            let wallte = await walletModel.findOne({ user_id: _id }).populate('user_id', 'name username email user_type  minner_Activity last_mining_time').lean()
+            let wallte = await walletModel.findOne({ user_id: _id }).populate('user_id', 
+            'name username email user_type  minner_Activity last_mining_time reddit_username is_number_verify is_complete_kyc current_rank ').lean()
             wallte.total_amount = wallte.total_amount.toString()
             wallte.referral_ammount = wallte.referral_ammount.toString()
             wallte.earning_ammount = wallte.earning_ammount.toString()
@@ -873,7 +875,6 @@ class users {
             console.log("iiiii", image.length , Array.isArray(image) )
             // console.log("hiiii", isArray(image))
             if (Array.isArray(image) && userId) {
-
                 let array = []
                 for (const item of req.body.image) {
                     let data = await commenFunction._uploadBase64Profile(req.body.profile_pic, 'Document')
