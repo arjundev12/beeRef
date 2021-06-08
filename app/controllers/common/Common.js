@@ -144,8 +144,8 @@ class Common {
     }
     async viewCms(req, res) {
         try {
-            if(req.query._id){
-                let data = await CmsModel.findOne({_id:req.query._id})
+            if(req.query.type){
+                let data = await CmsModel.findOne({type:req.query.type})
             res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
             }else{
                 res.json({ code: 400, success: false, message: "Id is required "})
