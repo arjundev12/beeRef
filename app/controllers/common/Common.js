@@ -19,7 +19,8 @@ class Common {
             viewNews: this.viewNews.bind(this),
             _uploadBase64image: this._uploadBase64image.bind(this),
             _validateBase64: this._validateBase64.bind(this),
-            getCms: this.getCms.bind(this)
+            getCms: this.getCms.bind(this),
+            viewCms: this.viewCms.bind(this)
         }
     }
     
@@ -136,6 +137,21 @@ class Common {
             let data = await CmsModel.find(query)
             // console.log("news", data)
             res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
+        } catch (error) {
+            console.log("Error in catch", error)
+            res.status(500).json({ success: false, message: "Somthing went wrong", })
+        }
+    }
+    async viewCms(req, res) {
+        try {
+            if(req.query._id){
+                let data = await CmsModel.findOne({_id:req.query._id})
+            res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
+            }else{
+                res.json({ code: 400, success: false, message: "Id is required "})
+            }
+            
+            // console.log("news", data)
         } catch (error) {
             console.log("Error in catch", error)
             res.status(500).json({ success: false, message: "Somthing went wrong", })

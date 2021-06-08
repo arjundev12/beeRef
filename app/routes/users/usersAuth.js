@@ -40,8 +40,9 @@ router.post('/get-news', getNewsAndBlog.getNews)
 router.post('/get-blogs', getNewsAndBlog.getBlogs)
 router.get('/view-blogs', getNewsAndBlog.viewBlogs)
 router.get('/view-news', getNewsAndBlog.viewNews)
-router.get('/get-cms', getNewsAndBlog.getCms)
 
+router.get('/get-cms', getNewsAndBlog.getCms)
+router.get('/view-cms', getNewsAndBlog.viewCms)
 
 router.post('/check-username',validationData.chekUserName, user_controller.chekUserName)
 router.post('/check-reddit-username',validationData.chekRedditUserName, user_controller.chekRedditUserName)
@@ -51,6 +52,8 @@ router.post('/set-token', user_controller.setFcmToken)
 
 
 router.post('/upload-kyc', user_controller.uploadKYCDoc)
+router.post('/search-user', user_controller.searchUser)
+
 // router.post('/send-Notification', user_controller.sendNotificationToUser)
 
 

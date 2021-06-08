@@ -35,7 +35,8 @@ class users {
             resetPassword: this.resetPassword.bind(this),
             setFcmToken: this.setFcmToken.bind(this),
             getLeaderboard: this.getLeaderboard.bind(this),
-            uploadKYCDoc: this.uploadKYCDoc.bind(this)
+            uploadKYCDoc: this.uploadKYCDoc.bind(this),
+            searchUser: this.searchUser.bind(this)
         }
     }
 
@@ -899,6 +900,29 @@ class users {
         } catch (error) {
             console.log("errorr",error )
             res.json({ code: 400, success: false, message: "Somthing went wrong", })
+        }
+    }
+
+    async searchUser(req, res) {
+        try {
+            let options = {
+                page: req.body.page || 1,
+                limit: req.body.limit || 10,
+                sort: { createdAt: -1 },
+                lean: true,
+            }
+            let query = {}
+            if (req.body.searchData ){
+                query = { $or: [{ name: { $regex: req.body.searchData, $options: "i" } },
+                 { username: { $regex: req.body.searchData, $options: "i" } },
+                 { email: { $regex: req.body.searchData, $options: "i" } }] }
+            }
+            let data = await UsersModel.paginate(query, options)
+            // console.log("news", data)
+            res.json({ code: 200, success: true, message: "Get list successfully ", data: data })
+        } catch (error) {
+            console.log("Error in catch", error)
+            res.status(500).json({ success: false, message: "Somthing went wrong", })
         }
     }
 }
