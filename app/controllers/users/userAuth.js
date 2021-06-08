@@ -923,7 +923,7 @@ class users {
             // console.log("news", data)
             for (let iterator of data.docs) {
                 if(iterator.ref_to_users){
-                    iterator.team_size = iterator.ref_to_users.length
+                    iterator.team_size = iterator.ref_to_users.length.toString()
                 }else{
                     iterator.team_size ="0"
                 }
