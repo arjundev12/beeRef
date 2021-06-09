@@ -116,15 +116,21 @@ class users {
                         }, { new: true })
 
                 } else {
-                    saveData = new UsersModel({
+                    let obj =  {
                         name: name? name: "",
-                        username: username?username: "" ,
                         email: email,
                         login_type: login_type,
                         Referral_id: await this._generateRefID(),
                         social_media_key: social_media_key
 
-                    })
+                    }
+                        if(username){
+                            obj.usename = username
+                        }else{
+                            obj.usename = ""  
+                        }
+                      
+                    saveData = new UsersModel(obj)
                     data = await saveData.save();
                     await commenFunction._createWallet(data._id, 'user')
                 }
