@@ -113,7 +113,8 @@ class users {
                         },
                         {
                             $set: { social_media_key: social_media_key }
-                        }, { new: true })
+                        }, { new: true }).lean()
+                        
                         data.social_status = "old"
                 } else {
                     let obj =  {
