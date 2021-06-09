@@ -12,6 +12,7 @@ router.post('/login',validationData.login, admin_controller.loginAdmin)
 router.post('/get-user', admin_controller.getUser)
 router.put('/update-user',admin_controller.AdminUpdateUser)
 router.post('/get-transaction', admin_controller.getTransaction)
+router.get('/get-Kyc', admin_controller.getKycDoc)
 
 
 module.exports = router;

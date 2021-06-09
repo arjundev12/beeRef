@@ -118,7 +118,7 @@ class users {
                 } else {
                     saveData = new UsersModel({
                         name: name? name: "",
-                        username: username,
+                        username: username?username: "" ,
                         email: email,
                         login_type: login_type,
                         Referral_id: await this._generateRefID(),
@@ -882,13 +882,14 @@ class users {
             if (Array.isArray(image) && userId) {
                 let array = []
                 for (const item of req.body.image) {
-                    let data = await commenFunction._uploadBase64Profile(req.body.profile_pic, 'Document')
+                    let data = await commenFunction._uploadBase64Profile(item, 'Document')
                     array.push(data.replace(/\\/g, "/"))
                 }
                 let getData = await DocumentsModel.findOne({owner:userId}).lean()
                  if(getData){
-                    getData.document.concat(array)
-                    await DocumentsModel.findOneAndUpdate({owner:userId},getData).lean()
+                    let newarray= array.concat(getData.document) //= array//
+                    console.log("document ", newarray)
+                    await DocumentsModel.findOneAndUpdate({owner:userId},{$set: {document:newarray }}).lean()
                     await UsersModel.findOneAndUpdate({_id:userId},{$set:{is_complete_kyc:"2"}}).lean()
                  }else{
                      let saveData = new DocumentsModel({

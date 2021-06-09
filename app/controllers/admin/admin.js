@@ -8,13 +8,15 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 const authConfig = require('../../authConfig/auth')
 const TransactionModal = require('../../models/transactions')
+const DocumentsModel = require('../../models/userDocument')
 class adminAuth {
     constructor() {
         return {
             loginAdmin: this.loginAdmin.bind(this),
             getUser: this.getUser.bind(this),
             AdminUpdateUser: this.AdminUpdateUser.bind(this),
-            getTransaction: this.getTransaction.bind(this)
+            getTransaction: this.getTransaction.bind(this),
+            getKycDoc: this.getKycDoc.bind(this)
         }
     }
 
@@ -192,6 +194,21 @@ class adminAuth {
         } catch (error) {
             console.log("Error in catch", error)
             res.status(500).json({ success: false, message: "Internal server error", })
+        }
+    }
+    async getKycDoc(req, res ){
+        try {
+            let id = req.query.id
+             let getUser = await DocumentsModel.findOne({owner: id})
+             if(getUser){
+                 res.json({code :200, success: true, message: "Get data successfully", data: getUser})
+             }else{
+                res.json({code :404, success: false, message: "Not found", data: getUser})
+             }
+        console.log("getUsertotal amount",getUser )
+        } catch (error) {
+            console.log("error in catch 88",error ) 
+            res.json({code :404, success: false, message: "Not found"})
         }
     }
 }
