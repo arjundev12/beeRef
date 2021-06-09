@@ -114,7 +114,7 @@ class users {
                         {
                             $set: { social_media_key: social_media_key }
                         }, { new: true }).lean()
-                        
+
                         data.social_status = "old"
                 } else {
                     let obj =  {
@@ -133,7 +133,8 @@ class users {
                         // }
                       
                     saveData = new UsersModel(obj)
-                    data = await saveData.save();
+                   let data1= await saveData.save();
+                     data= await UsersModel.findOne({_id:data1._id }).lean()
                     data.social_status = "new"
                     await commenFunction._createWallet(data._id, 'user')
                 }
