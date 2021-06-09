@@ -119,16 +119,17 @@ class users {
                     let obj =  {
                         name: name? name: "",
                         email: email,
+                        username: "",
                         login_type: login_type,
                         Referral_id: await this._generateRefID(),
                         social_media_key: social_media_key
 
                     }
-                        if(username){
-                            obj.usename = username
-                        }else{
-                            obj.usename = ""  
-                        }
+                        // if(username){
+                        //     obj.usename = username
+                        // }else{
+                        //     obj.usename = ""  
+                        // }
                       
                     saveData = new UsersModel(obj)
                     data = await saveData.save();
