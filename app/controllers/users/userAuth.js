@@ -104,7 +104,7 @@ class users {
                     data = await saveData.save();
                     await commenFunction._createWallet(data._id, 'user')
                 }
-            } else if (social_media_key) {
+            } else if (social_media_key && social_media_key != "") {
                 getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: login_type }, { user_type: 'user' }] })
                 if (getUser) {
                     data = await UsersModel.findOneAndUpdate(
@@ -117,11 +117,11 @@ class users {
 
                 } else {
                     saveData = new UsersModel({
-                        name: name,
+                        name: name? name: "",
                         username: username,
                         email: email,
                         login_type: login_type,
-                        Referral_id: rendomNumber,
+                        Referral_id: await this._generateRefID(),
                         social_media_key: social_media_key
 
                     })
