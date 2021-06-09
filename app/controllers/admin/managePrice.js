@@ -45,7 +45,7 @@ class ManagePrice {
     }
     async update(req, res) {
         try {
-            let { referral_ammount, earning_ammount, mining_rate, mining_ammount, number_reward, reddit_reward, id } = req.body
+            let { referral_ammount, earning_ammount, mining_rate, mining_ammount, number_reward, reddit_reward,status, id } = req.body
             console.log("hiiii", id)
             if (!id) {
                 res.status(500).json({ code: 422, success: false, message: "Id is required", })
@@ -91,7 +91,7 @@ class ManagePrice {
     async getData(req, res) {
         try {
             let getData = await ManagePriceModel.find()
-            res.json({ code: 200, success: true, message: 'Get data successfully', getData })
+            res.json({ code: 200, success: true, message: 'Get data successfully',data: getData })
         } catch (error) {
             console.log("Error in catch", error)
             res.status(500).json({ success: false, message: "Internal server error", })

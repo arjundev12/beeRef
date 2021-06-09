@@ -13,6 +13,7 @@ class adminAuth {
         return {
             loginAdmin: this.loginAdmin.bind(this),
             getUser: this.getUser.bind(this),
+            AdminUpdateUser: this.AdminUpdateUser.bind(this),
             getTransaction: this.getTransaction.bind(this)
         }
     }
@@ -68,6 +69,64 @@ class adminAuth {
         } catch (error) {
             console.log("Error in catch", error)
             res.status(500).json({ success: false, message: "Internal server error", })
+        }
+    }
+    async AdminUpdateUser(req, res) {
+        try {
+            let { _id, name, email, username, number, profile_pic, login_type, country, reddit_username, minner_Activity ,is_number_verify,is_complete_kyc} = req.body
+            // console.log("getUser", name, email, username, number, profile_pic, login_type, country)
+            // let array = [{ _id: _id }, { login_type: login_type }]
+            let query = {_id: _id }
+            // if (email) {
+            //     array.push({
+            //         email: email
+            //     })
+            // }
+            let getUser = await UsersModel.findOne(query).lean()
+            // console.log("getUser", getUser)
+            if (getUser) {
+                let updateData = {}
+                if (name && name != "") {
+                    updateData.name = name
+                }
+                if (username && username != "") {
+                    updateData.username = username
+                }
+                if (number && number != "") {
+                    updateData.number = number
+                    // updateData.is_number_verify = "2"
+                }
+                if (country && country != "") {
+                    updateData.country = country
+                }
+                if (profile_pic && profile_pic != "") {
+                    updateData.profile_pic = profile_pic
+                }
+                if (minner_Activity && minner_Activity != "") {
+                    updateData.minner_Activity = minner_Activity
+                }
+
+                if (reddit_username && reddit_username != "") {
+                    updateData.reddit_username = reddit_username
+                }
+                if (is_number_verify && is_number_verify != "") {
+                    updateData.is_number_verify = is_number_verify
+                }
+                if (is_complete_kyc && is_complete_kyc != "") {
+                    updateData.is_complete_kyc = is_complete_kyc
+                }
+                let updateUser = await UsersModel.findOneAndUpdate(query, { $set: updateData }, { new: true })
+                res.json({ code: 200, success: true, message: 'profile update successfully', data: updateUser })
+            } else {
+                res.json({ code: 404, success: false, message: 'Email is not register', })
+            }
+        } catch (error) {
+            console.log("Error in catch", error)
+            if (error.codeName == 'DuplicateKey') {
+                res.json({ code: 400, success: false, message: `${Object.keys(error.keyValue)} is already exist`, })
+            } else {
+                res.json({ code: 500, success: false, message: "Somthing went wrong", })
+            }
         }
     }
     async getTotal(transaction_type ){

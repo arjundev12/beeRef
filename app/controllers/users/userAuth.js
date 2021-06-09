@@ -497,8 +497,8 @@ class users {
             data.team = arrayList.length > 5 ? arrayList.splice(0, 5) : arrayList
             //////////////////get news///////////////////////
             let options = {
-                page: req.body.page || 1,
-                limit: req.body.limit || 2,
+                page: Number(req.body.page) || 1,
+                limit: Number(req.body.limit) || 2,
                 sort: { createdAt: -1 },
                 lean: true,
             }
@@ -580,14 +580,15 @@ class users {
                         }
                     ).lean()
                     //  await this._activateMiner(getUser._id )
+                    let constantdb = await ManagePriceModel.find()
                     await walletModel.findOneAndUpdate({ user_id: getUser._id }, {
                         $inc: {
-                            referral_ammount: Constants.referral_ammount,
-                            total_amount: Constants.referral_ammount
+                            referral_ammount: constantdb[0].referral_ammount,
+                            total_amount: constantdb[0].referral_ammount
                         }
                     }).lean()
                     //reciver trasaction //send notifications
-                    commenFunction._createHistory(getUser._id, null, Constants.referral_ammount, Constants.recieve, Constants.referral)
+                    commenFunction._createHistory(getUser._id, null, constantdb[0].referral_ammount, Constants.recieve, Constants.referral)
                     res.json({ code: 200, success: true, message: 'Submit successfully', data: data })
                 } else {
                     res.json({ code: 404, success: false, message: 'Somthing went wrong' })
@@ -602,6 +603,7 @@ class users {
         try {
             let { _id, status } = req.body
             let data
+            let constantdb = await ManagePriceModel.find()
 
             // console.log("req.body", req.body)
             data = await UsersModel.findOne({ _id: _id })
@@ -616,21 +618,20 @@ class users {
             } else {
                 if (status == true || status == 'true') {
                     await this._activateMiner(_id)
-
                     await walletModel.findOneAndUpdate({ user_id: _id }, {
                         $inc: {
-                            mining_ammount: Constants.mining_ammount,
-                            total_amount: Constants.mining_ammount
+                            mining_ammount: constantdb[0].mining_ammount,
+                            total_amount: constantdb[0].mining_ammount
                         }
                     }).lean()
-                    commenFunction._createHistory(_id, null, Constants.mining_ammount, Constants.recieve, Constants.mining)
+                    commenFunction._createHistory(_id, null, constantdb[0].mining_ammount, Constants.recieve, Constants.mining)
                     await walletModel.findOneAndUpdate({ user_id: data.from_referral_id }, {
                         $inc: {
-                            earning_ammount: Constants.earning_ammount,
-                            total_amount: Constants.earning_ammount
+                            earning_ammount: constantdb[0].earning_ammount,
+                            total_amount: constantdb[0].earning_ammount
                         }
                     }).lean()
-                    commenFunction._createHistory(data.from_referral_id, null, Constants.earning_ammount, Constants.recieve, Constants.earning)
+                    commenFunction._createHistory(data.from_referral_id, null, constantdb[0].earning_ammount, Constants.recieve, Constants.earning)
                     res.json({ code: 200, success: true, message: 'Status update successfully', })
                 } else {
 
@@ -769,13 +770,14 @@ class users {
     }
     async _addNumberReward(_id) {
         try {
+            let constantdb = await ManagePriceModel.find()
             await walletModel.findOneAndUpdate({ user_id: _id }, {
                 $inc: {
-                    earning_ammount: Constants.number_reward,
-                    total_amount: Constants.number_reward
+                    earning_ammount: constantdb[0].number_reward,
+                    total_amount: constantdb[0].number_reward
                 }
             }).lean()
-            commenFunction._createHistory(_id, null, Constants.number_reward, Constants.recieve, Constants.earning)
+            commenFunction._createHistory(_id, null, constantdb[0].number_reward, Constants.recieve, Constants.earning)
         } catch (error) {
             console.log("error in catch _addNumberReward", error)
         }
@@ -783,13 +785,14 @@ class users {
     }
     async _addRedditReward(_id) {
         try {
+            let constantdb = await ManagePriceModel.find()
             await walletModel.findOneAndUpdate({ user_id: _id }, {
                 $inc: {
-                    earning_ammount: Constants.reddit_reward,
-                    total_amount: Constants.reddit_reward
+                    earning_ammount: constantdb[0].reddit_reward,
+                    total_amount: constantdb[0].reddit_reward
                 }
             }).lean()
-            commenFunction._createHistory(_id, null, Constants.reddit_reward, Constants.recieve, Constants.earning)
+            commenFunction._createHistory(_id, null, constantdb[0].reddit_reward, Constants.recieve, Constants.earning)
         } catch (error) {
             console.log("error in catch _addRedditReward", error)
         }
@@ -908,8 +911,8 @@ class users {
     async searchUser(req, res) {
         try {
             let options = {
-                page: req.body.page || 1,
-                limit: req.body.limit || 10,
+                page: Number(req.body.page) || 1,
+                limit: Number(req.body.limit) || 10,
                 sort: { createdAt: -1 },
                 lean: true,
             }
