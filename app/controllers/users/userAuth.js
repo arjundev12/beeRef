@@ -364,7 +364,8 @@ class users {
                 team: arrayList,
                 active_minner: count.length,
                 inactive_minner: total_minner - count.length,
-                total_minner: total_minner
+                total_minner: total_minner,
+                current_rank: await (await commenFunction._updateRank(_id)).toString()
             }
             res.json({ code: 200, success: true, message: 'uploade successfully', data: newData })
         } catch (error) {
