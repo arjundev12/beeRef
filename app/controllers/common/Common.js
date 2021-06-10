@@ -5,6 +5,7 @@ const config = require('../../../config/config')
 const NewsModel = require('../../models/news')
 const BlogModel = require('../../models/blogs')
 const CmsModel = require('../../models/cms')
+const walletModel = require('../../models/wallet')
 const base64Img = require('base64-img')
 const sharp = require ('sharp')
 const fs = require('fs')
@@ -20,7 +21,7 @@ class Common {
             _uploadBase64image: this._uploadBase64image.bind(this),
             _validateBase64: this._validateBase64.bind(this),
             getCms: this.getCms.bind(this),
-            viewCms: this.viewCms.bind(this)
+            viewCms: this.viewCms.bind(this),
         }
     }
     
@@ -158,6 +159,10 @@ class Common {
         }
     }
 
+  
+
 }
+
+
 
 module.exports = new Common();

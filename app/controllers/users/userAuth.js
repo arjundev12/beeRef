@@ -338,6 +338,7 @@ class users {
                 for (let item of data.ref_to_users) {
                     let userData = {}
                     userData = await this._getUserData(item.id)
+                    userData.current_rank = await (await commenFunction._updateRank(item.id)).toString()
                     userData.status = item.status
                     userData.team_size = userData.ref_to_users ? userData.ref_to_users.length : 0
                     delete userData.ref_to_users
@@ -495,6 +496,7 @@ class users {
                     userData.team_size = userData.ref_to_users ? userData.ref_to_users.length : 0
                     delete userData.ref_to_users
                     userData.status = item.status
+                    userData.current_rank = await (await commenFunction._updateRank(item.id)).toString()
                     if (userData.minner_Activity == true) {
                         miningRate += 0.0416
                         activeminer += 1
@@ -525,8 +527,9 @@ class users {
             wallte.earning_ammount = wallte.earning_ammount.toString()
             wallte.mining_ammount = wallte.mining_ammount.toString()
             wallte.miningRate = miningRate + " /per hour",
-                wallte.active_minner = activeminer
+            wallte.active_minner = activeminer
             wallte.total_minner = arrayList.length
+            wallte.user_id.current_rank =  await (await commenFunction._updateRank(_id)).toString()
 
 
 
@@ -847,36 +850,26 @@ class users {
             let arrayList = [];
             if (!data){
                 res.json({ code: 404, success: false, message: 'Data not found'})
-            }else if (data.ref_to_users) {
-                for (let item of data.ref_to_users) {
+            }else {
+                 let allRank = await commenFunction._getAllRank()
+                 for (let i=0 ;i< 10 ;i++) {
                     let userData = {}
-                    userData = await this._getUserData(item.id)
-                    userData.status = item.status
+                    userData = await this._getUserData(allRank[i].user_id)
+                    userData.current_rank = (i+1).toString()
+                    userData.status = allRank[i].status
                     userData.team_size = userData.ref_to_users ? userData.ref_to_users.length : 0
                     delete userData.ref_to_users
                     arrayList.push(userData)
                 }
-
-                let total_minner = arrayList.length
-                arrayList.sort((a, b) => {
-                    return b.team_size - a.team_size;
-                });
-                let count = arrayList.filter(val => {
-                    return val.minner_Activity == true
-                })
-                let secondArray = arrayList.splice(3);
-    
+                let secondArray = arrayList.splice(3)
                 let newData = {
                     team: secondArray,
-                    RankerOne: arrayList.length > 0 ? arrayList[0] : "",
-                    RankerTwo: arrayList.length > 1 ? arrayList[1] : "",
-                    RankerThree: arrayList.length > 2 ? arrayList[2] : "",
-                    //  active_minner: count.length,
-                    current_rank: count.length
+                    RankerOne:arrayList[0],
+                    RankerTwo: arrayList[1],
+                    RankerThree: arrayList[2],
+                    current_rank: await (await commenFunction._updateRank(_id)).toString()
                 }
                 res.json({ code: 200, success: true, message: 'Get data successfully', data: newData })
-            }else{
-                res.json({ code: 404, success: false, message: 'Data not found'})
             }
            
         } catch (error) {

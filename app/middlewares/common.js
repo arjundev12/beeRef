@@ -28,7 +28,30 @@ class Common {
             _createWallet: this._createWallet.bind(this),
             _sendMail: this._sendMail.bind(this),
             _uploadBase64Profile: this._uploadBase64Profile.bind(this),
-            _createHistory: this._createHistory.bind(this)
+            _createHistory: this._createHistory.bind(this),
+            _updateRank: this._updateRank.bind(this),
+            _getAllRank: this._getAllRank.bind(this)
+        }
+    }
+
+    async _updateRank(id) {
+        try {
+            console.log("index,,,,,,", typeof id,)
+            let id1 = typeof id == 'object' ? id.toString() : id
+            let Rank = await walletModel.find().sort({ total_amount: -1 })
+            const index = Rank.findIndex(element => element.user_id == id1);
+            console.log("index,,,,,,", index)
+            return index
+        } catch (error) {
+            console.error("error in _createWallet", error)
+        }
+    }
+    async _getAllRank(id) {
+        try {
+            let Rank = await walletModel.find().sort({ total_amount: -1 })
+            return Rank
+        } catch (error) {
+            console.error("error in _createWallet", error)
         }
     }
     async _sendMail(toMail, text = constant.defaultMsg, subject = constant.defaultSub) {
@@ -131,23 +154,23 @@ class Common {
             console.error("error in _uploadBase64Profile", error)
         }
     }
-    async _createHistory(toId =null, fromId=null, amount, type, transactionType) {
+    async _createHistory(toId = null, fromId = null, amount, type, transactionType) {
         try {
             let saveData = {
                 transaction_type: transactionType,
                 type: type,
             }
-            if(fromId){
+            if (fromId) {
                 saveData.from_id = fromId
-            }if(toId){
+            } if (toId) {
                 saveData.to_id = toId
             }
-            if(amount){
-                saveData.amount= Number(amount)
+            if (amount) {
+                saveData.amount = Number(amount)
             }
-          let saveData1=  new transactionModel(saveData)
-          await saveData1.save()
-          return
+            let saveData1 = new transactionModel(saveData)
+            await saveData1.save()
+            return
         } catch (error) {
             console.error("error in _createWallet", error)
         }
