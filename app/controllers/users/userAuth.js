@@ -212,6 +212,13 @@ class users {
                         email: getUser.email
                     }
                     getUser.token = await jwt.sign(stoken, authConfig.secret, { expiresIn: '7d' });
+                    if(getUser.profile_pic !=""){
+                        getUser.imageUrl = Constants.imageUrl + getUser.profile_pic
+                    }else{
+                        getUser.imageUrl = Constants.imageUrl + Constants.defaultImge
+                    }
+                    // let imagenew = 
+                    // getUser.imageUrl = Constants.imageUrl + getUser.profile_pic != ""?getUser.profile_pic :  Constants.defaultImge
                     res.json({ code: 200, success: true, message: 'login successfully', data: getUser })
                 } else {
                     res.json({ code: 404, success: false, message: 'invalid password', })
