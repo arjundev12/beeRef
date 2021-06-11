@@ -495,7 +495,8 @@ class users {
             ///////////////////get team//////////////
             let team = await UsersModel.findOne({ _id: _id }).lean()
             let arrayList = [];
-            let miningRate = 0
+            let constantdb = await ManagePriceModel.find()
+            let miningRate = constantdb[0].mining_rate
             let activeminer = 0
             if (team.ref_to_users) {
                 for (let item of team.ref_to_users) {
@@ -506,7 +507,7 @@ class users {
                     userData.status = item.status
                     userData.current_rank = await (await commenFunction._updateRank(item.id)).toString()
                     if (userData.minner_Activity == true) {
-                        miningRate += 0.0416
+                        miningRate += constantdb[0].mining_rate
                         activeminer += 1
                     }
                     arrayList.push(userData)
