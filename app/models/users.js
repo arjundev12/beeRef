@@ -43,6 +43,11 @@ var UsersSchema = new Schema({
     type: String,
     trim: true,
   },
+  country_code: {
+    type: String,
+    trim: true,
+    default: ""
+  },
   user_type: {
     type: String,
     enum: ['user', 'admin'],

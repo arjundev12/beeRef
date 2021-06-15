@@ -233,8 +233,8 @@ class users {
     }
     async UpdateProfile(req, res) {
         try {
-            let { _id, name, email, username, number, profile_pic, login_type, country, reddit_username, minner_Activity } = req.body
-            // console.log("getUser", name, email, username, number, profile_pic, login_type, country)
+            let { _id, name,country_code, email, username, number, profile_pic, login_type, country, reddit_username, minner_Activity } = req.body
+            console.log("getUser",  country_code)
             let array = [{ _id: _id }, { login_type: login_type }]
             let query = { $and: array }
             if (email) {
@@ -262,6 +262,10 @@ class users {
                 if (country && country != "") {
                     updateData.country = country
                 }
+                if (country_code && country_code != "") {
+                    updateData.country_code = country_code
+                }
+                
                 if (profile_pic && profile_pic != "") {
                     updateData.profile_pic = profile_pic
                 }
@@ -656,14 +660,10 @@ class users {
                     commenFunction._createHistory(data.from_referral_id, null, constantdb[0].earning_ammount, Constants.recieve, Constants.earning)
                     res.json({ code: 200, success: true, message: 'Status update successfully', })
                 } else {
-
                     res.json({ code: 400, success: false, message: 'please send the correct status', })
-
                 }
 
             }
-
-
         } catch (error) {
             console.log("Error in catch", error)
             res.json({ success: false, message: "Somthing went wrong", })
@@ -724,7 +724,7 @@ class users {
                                 Notification._sendPushNotification(message, data2.fcmToken, data)
                             })
                         }).catch(err => console.log("err", err))
-                    }, 1000 * 60 * 1
+                    }, 1000 * 60 * 24
                         // 
                     );
                 }

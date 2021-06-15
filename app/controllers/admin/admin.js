@@ -9,6 +9,7 @@ const jwt = require('jsonwebtoken')
 const authConfig = require('../../authConfig/auth')
 const TransactionModal = require('../../models/transactions')
 const DocumentsModel = require('../../models/userDocument')
+
 class adminAuth {
     constructor() {
         return {
@@ -16,7 +17,10 @@ class adminAuth {
             getUser: this.getUser.bind(this),
             AdminUpdateUser: this.AdminUpdateUser.bind(this),
             getTransaction: this.getTransaction.bind(this),
-            getKycDoc: this.getKycDoc.bind(this)
+            getKycDoc: this.getKycDoc.bind(this),
+            getUserKyc:this.getUserKyc.bind(this),
+            getTotalCount: this.getTotalCount.bind(this)
+
         }
     }
 
@@ -55,7 +59,7 @@ class adminAuth {
                 lean: true,
                 // select: 'name user_type minner_Activity createdAt',
             }
-            let query = {}
+            let query = {user_type: 'user'}
             if (req.body.searchData) {
                 query = {
                     user_type: 'user',
@@ -65,8 +69,32 @@ class adminAuth {
                 }
             }
             let getUser = await UsersModel.paginate(query, options)
-            // { name: 1, user_type: 1, minner_Activity: 1, createdAt: 1 }).lean()
-            // console.log("getUser", getUser)
+            res.json({ code: 200, success: true, message: "Get list successfully ", data: getUser })
+        } catch (error) {
+            console.log("Error in catch", error)
+            res.status(500).json({ success: false, message: "Internal server error", })
+        }
+    }
+    async getUserKyc(req, res) {
+        try {
+            let options = {
+                page: req.body.page || 1,
+                limit: req.body.limit || 10,
+                sort: { createdAt: -1 },
+                lean: true,
+                // select: 'name user_type minner_Activity createdAt',
+            }
+            let query = {user_type: 'user',  is_complete_kyc :{ $ne : '0'},}
+            if (req.body.searchData) {
+                query = {
+                    user_type: 'user',
+                    is_complete_kyc :{ $ne : '0'},
+                    $or: [{ email: { $regex: req.body.searchData, $options: "i" } },
+                    { name: { $regex: req.body.searchData, $options: "i" } },
+                    { username: { $regex: req.body.searchData, $options: "i" } }]
+                }
+            }
+            let getUser = await UsersModel.paginate(query, options)
             res.json({ code: 200, success: true, message: "Get list successfully ", data: getUser })
         } catch (error) {
             console.log("Error in catch", error)
@@ -75,7 +103,7 @@ class adminAuth {
     }
     async AdminUpdateUser(req, res) {
         try {
-            let { _id, name, email, username, number, profile_pic, login_type, country, reddit_username, minner_Activity ,is_number_verify,is_complete_kyc} = req.body
+            let { _id, name, email,country_code, username, number, profile_pic, login_type, country, reddit_username, minner_Activity ,is_number_verify,is_complete_kyc} = req.body
             // console.log("getUser", name, email, username, number, profile_pic, login_type, country)
             // let array = [{ _id: _id }, { login_type: login_type }]
             let query = {_id: _id }
@@ -117,6 +145,10 @@ class adminAuth {
                 if (is_complete_kyc && is_complete_kyc != "") {
                     updateData.is_complete_kyc = is_complete_kyc
                 }
+                if (country_code && country_code != "") {
+                    updateData.country_code = country_code
+                }
+                
                 let updateUser = await UsersModel.findOneAndUpdate(query, { $set: updateData }, { new: true })
                 res.json({ code: 200, success: true, message: 'profile update successfully', data: updateUser })
             } else {
@@ -196,6 +228,7 @@ class adminAuth {
             res.status(500).json({ success: false, message: "Internal server error", })
         }
     }
+    
     async getKycDoc(req, res ){
         try {
             let id = req.query.id
@@ -205,6 +238,27 @@ class adminAuth {
              }else{
                 res.json({code :404, success: false, message: "Not found", data: getUser})
              }
+        console.log("getUsertotal amount",getUser )
+        } catch (error) {
+            console.log("error in catch 88",error ) 
+            res.json({code :404, success: false, message: "Not found"})
+        }
+    }
+    async getTotalCount(req, res ){
+        try {
+            let query1 = { "$match": { $and: [{block_user: '0' }] } }
+            let getUser = await UsersModel.aggregate([  {
+                $group: {
+                    _id: {
+                      minner_Activity: "$minner_Activity" ,
+                      block_user: "$block_user"
+                    },
+                    COUNT: {
+                        $sum: 1
+                    }
+                }
+            },])
+            res.json({code :200, success: true, message: "Get data successfully", data: getUser})
         console.log("getUsertotal amount",getUser )
         } catch (error) {
             console.log("error in catch 88",error ) 

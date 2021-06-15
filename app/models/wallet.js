@@ -16,7 +16,7 @@ var walletSchema = new Schema({
     },
     coin_type: {
         type: String,
-        default: "bee",
+        default: "PC",
         trim: true
     },
     referral_ammount: {

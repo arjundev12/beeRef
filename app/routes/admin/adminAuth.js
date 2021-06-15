@@ -5,7 +5,7 @@ let uploadFile = require('../../middlewares/fileUploadHelper');
 let upload=uploadFile.uploadFileMethod('ProfileImage');
 // create login routes
 let admin_controller = require('../../controllers/admin/admin');
-let wallet = require('../../controllers/users/wallet')
+let wallet = require('../../controllers/admin/wallet')
 let validationData= require('../../middlewares/FrontendValidator');
 // upload.single('profile_image')
 router.post('/login',validationData.login, admin_controller.loginAdmin)
@@ -13,6 +13,11 @@ router.post('/get-user', admin_controller.getUser)
 router.put('/update-user',admin_controller.AdminUpdateUser)
 router.post('/get-transaction', admin_controller.getTransaction)
 router.get('/get-Kyc', admin_controller.getKycDoc)
+router.post('/get-kyc-user', admin_controller.getUserKyc)
+router.get('/wallet', wallet.getWallet)
+router.get('/get-total', admin_controller.getTotalCount)
+
+
 
 
 module.exports = router;
