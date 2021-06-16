@@ -7,11 +7,12 @@ const upload=uploadFile.uploadFileMethod('NewsAndBlogs');
 let getNewsAndBlog = require('../../controllers/common/Common');
 let createNewsAndBlog = require('../../controllers/admin/newsAndBlog');
 let validationData= require('../../middlewares/FrontendValidator');
+const Auth = require("../../middlewares/loginToken")
 // upload.single('profile_image')
-router.post('/news',createNewsAndBlog.createNews)
-router.post('/blogs',createNewsAndBlog.createBlogs)
-router.put('/news',createNewsAndBlog.updateNews)
-router.put('/blogs',createNewsAndBlog.updateBlogs)
+router.post('/news',Auth.jwtVerify,createNewsAndBlog.createNews)
+router.post('/blogs',Auth.jwtVerify,createNewsAndBlog.createBlogs)
+router.put('/news',Auth.jwtVerify,createNewsAndBlog.updateNews)
+router.put('/blogs',Auth.jwtVerify,createNewsAndBlog.updateBlogs)
 
 
 router.post('/get-news', getNewsAndBlog.getNews)

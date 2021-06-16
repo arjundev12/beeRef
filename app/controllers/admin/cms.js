@@ -1,13 +1,11 @@
 
 
-const config = require("../../../config/config")
 const commenFunction = require('../common/Common')
 const UsersModel = require('../../models/users');
 const CmsModel = require('../../models/cms')
 const moment = require("moment");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
-const authConfig = require('../../authConfig/auth')
 class Cms {
     constructor() {
         return {

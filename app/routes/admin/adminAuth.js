@@ -1,21 +1,26 @@
 const express = require('express');
 const router = express.Router();
 
-let uploadFile = require('../../middlewares/fileUploadHelper');
-let upload=uploadFile.uploadFileMethod('ProfileImage');
+const uploadFile = require('../../middlewares/fileUploadHelper');
+const upload=uploadFile.uploadFileMethod('ProfileImage');
 // create login routes
-let admin_controller = require('../../controllers/admin/admin');
-let wallet = require('../../controllers/admin/wallet')
-let validationData= require('../../middlewares/FrontendValidator');
+const admin_controller = require('../../controllers/admin/admin');
+const user_controller = require('../../controllers/users/userAuth');
+const wallet = require('../../controllers/admin/wallet')
+const validationData= require('../../middlewares/FrontendValidator');
+const Auth = require("../../middlewares/loginToken")
 // upload.single('profile_image')
 router.post('/login',validationData.login, admin_controller.loginAdmin)
-router.post('/get-user', admin_controller.getUser)
-router.put('/update-user',admin_controller.AdminUpdateUser)
-router.post('/get-transaction', admin_controller.getTransaction)
-router.get('/get-Kyc', admin_controller.getKycDoc)
-router.post('/get-kyc-user', admin_controller.getUserKyc)
-router.get('/wallet', wallet.getWallet)
-router.get('/get-total', admin_controller.getTotalCount)
+router.post('/get-user',Auth.jwtVerify, admin_controller.getUser)
+router.put('/update-user', Auth.jwtVerify,admin_controller.AdminUpdateUser)
+router.post('/get-transaction',Auth.jwtVerify, admin_controller.getTransaction)
+router.get('/get-Kyc',Auth.jwtVerify, admin_controller.getKycDoc)
+router.post('/get-kyc-user',Auth.jwtVerify, admin_controller.getUserKyc)
+router.get('/wallet',Auth.jwtVerify, wallet.getWallet)
+router.get('/get-total',Auth.jwtVerify, admin_controller.getTotalCount)
+
+router.post('/update-profile',Auth.jwtVerify,validationData.update, user_controller.UpdateProfile)
+router.get('/user-details',Auth.jwtVerify, user_controller.getUserDetails)
 
 
 

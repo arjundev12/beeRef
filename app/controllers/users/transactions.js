@@ -1,10 +1,7 @@
-const config = require("../../../config/config")
-const commenFunction = require('../common/Common')
 const UsersModel = require('../../models/users');
 const moment = require("moment");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
-const authConfig = require('../../authConfig/auth')
 const walletModel = require('../../models/wallet')
 const TransactionModel = require('../../models/transactions');
 class users {

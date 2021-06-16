@@ -1,21 +1,13 @@
 
 
-const utilities = require('util');
-const config = require('../../config/config')
 const walletModel = require('../models/wallet')
 const sgMail = require('@sendgrid/mail')
 const constant = require('../utilities/constants')
-console.log("api key1111", process.env.SENDGRID_API_KEY1, constant.SENDGRID_API_KEY1)
-sgMail.setApiKey(constant.SENDGRID_API_KEY1)
+// console.log("api key1111", process.env.SENDGRID_API_KEY1)
+sgMail.setApiKey(process.env.SENDGRID_API_KEY1)
 const base64Img = require('base64-img')
 var jwt = require('jsonwebtoken');
-var verifyOptions = {
-    issuer: config.i,
-    subject: config.s,
-    audience: config.BASE_URL,
-    expiresIn: config.tempTokenExpiresTime,
-    algorithm: config.algorithm
-};
+
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const transactionModel = require('../models/transactions');

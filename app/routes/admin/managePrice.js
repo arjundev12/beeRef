@@ -7,11 +7,12 @@ const upload=uploadFile.uploadFileMethod('NewsAndBlogs');
 let getNewsAndBlog = require('../../controllers/common/Common');
 let managePrice = require('../../controllers/admin/managePrice');
 let validationData= require('../../middlewares/FrontendValidator');
+const Auth = require('../../middlewares/loginToken')
 // upload.single('profile_image')
-router.post('/add-price',managePrice.create)
-router.put('/update-price',managePrice.update)
-router.get('/get-price',managePrice.getData)
-router.get('/view-price',managePrice.viewData)
+router.post('/add-price',Auth.jwtVerify,managePrice.create)
+router.put('/update-price',Auth.jwtVerify,managePrice.update)
+router.get('/get-price',Auth.jwtVerify,managePrice.getData)
+router.get('/view-price',Auth.jwtVerify,managePrice.viewData)
 
 module.exports = router;
 

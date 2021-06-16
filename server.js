@@ -1,10 +1,11 @@
 var express = require('express');
 var app = express();
-var config = require('./config/config');
+require('dotenv').config()
 var helmet = require('helmet');
 var cors = require('cors');
 const path = require("path");
-const PORT = '3001';//config.serveport;
+
+const PORT = '3001'  || process.env.PORT
 var bodyParser = require('body-parser');
 var server = require('http').Server(app);
 const mongoose = require('mongoose');

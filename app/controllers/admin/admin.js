@@ -1,12 +1,10 @@
 
 
-const config = require("../../../config/config")
 const commenFunction = require('../../middlewares/common')
 const UsersModel = require('../../models/users');
 const moment = require("moment");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
-const authConfig = require('../../authConfig/auth')
 const TransactionModal = require('../../models/transactions')
 const DocumentsModel = require('../../models/userDocument')
 
@@ -29,7 +27,7 @@ class adminAuth {
             let { email, password } = req.body
             let getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: 'manual' }, { user_type: 'admin' }] },
                 { username: 1, email: 1, Referral_id: 1, password: 1, login_type: 1 }).lean()
-            console.log("getUser", getUser)
+            // console.log("getUser", getUser)
             if (getUser) {
                 let verifypass = await bcrypt.compareSync(password, getUser.password);
                 if (verifypass) {
@@ -37,10 +35,10 @@ class adminAuth {
                         _id: getUser._id,
                         email: getUser.email
                     }
-                    getUser.token = await jwt.sign(stoken, authConfig.secret, { expiresIn: '7d' });
+                    getUser.token = await jwt.sign(stoken,process.env.SUPERSECRET, { expiresIn: '1d' });
                     res.json({ code: 200, success: true, message: 'login successfully', data: getUser })
                 } else {
-                    res.json({ code: 404, success: false, message: 'invalid password', })
+                    res.json({ code: 404, success: false, message: 'invalid password',})
                 }
             } else {
                 res.json({ code: 404, success: false, message: 'Email is not register', })
@@ -103,8 +101,8 @@ class adminAuth {
     }
     async AdminUpdateUser(req, res) {
         try {
-            let { _id, name, email,country_code, username, number, profile_pic, login_type, country, reddit_username, minner_Activity ,is_number_verify,is_complete_kyc} = req.body
-            // console.log("getUser", name, email, username, number, profile_pic, login_type, country)
+            let { _id, name, email,country_code, username, number, profile_pic, login_type, country, reddit_username, minner_Activity ,is_number_verify,is_complete_kyc,block_user} = req.body
+            // console.log("getUser",_id, block_user)
             // let array = [{ _id: _id }, { login_type: login_type }]
             let query = {_id: _id }
             // if (email) {
@@ -148,6 +146,10 @@ class adminAuth {
                 if (country_code && country_code != "") {
                     updateData.country_code = country_code
                 }
+                if (block_user && block_user != "") {
+                    updateData.block_user = block_user
+                }
+                
                 
                 let updateUser = await UsersModel.findOneAndUpdate(query, { $set: updateData }, { new: true })
                 res.json({ code: 200, success: true, message: 'profile update successfully', data: updateUser })
@@ -176,7 +178,7 @@ class adminAuth {
                 }
             }
         ])
-        console.log("getUsertotal amount",getUser )
+        // console.log("getUsertotal amount",getUser )
         } catch (error) {
             console.log("error in catch 88",error ) 
         }
@@ -199,7 +201,7 @@ class adminAuth {
             }
             if (req.body.transaction_type && req.body.transaction_type != "") {
                 query.transaction_type = req.body.transaction_type
-                console.log("req.body.transaction_typereq.body.transaction_type", req.body.transaction_type)
+                // console.log("req.body.transaction_typereq.body.transaction_type", req.body.transaction_type)
                 total_amount= await this.getTotal()
 
             }
@@ -238,7 +240,7 @@ class adminAuth {
              }else{
                 res.json({code :404, success: false, message: "Not found", data: getUser})
              }
-        console.log("getUsertotal amount",getUser )
+        // console.log("getUsertotal amount",getUser )
         } catch (error) {
             console.log("error in catch 88",error ) 
             res.json({code :404, success: false, message: "Not found"})
@@ -259,7 +261,7 @@ class adminAuth {
                 }
             },])
             res.json({code :200, success: true, message: "Get data successfully", data: getUser})
-        console.log("getUsertotal amount",getUser )
+        // console.log("getUsertotal amount",getUser )
         } catch (error) {
             console.log("error in catch 88",error ) 
             res.json({code :404, success: false, message: "Not found"})

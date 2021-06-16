@@ -1,4 +1,3 @@
-const config = require("../../../config/config")
 const commenFunction = require('../../middlewares/common')
 const NewsModel = require('../../models/news')
 const BlogModel = require("../../models/blogs")
@@ -7,7 +6,6 @@ const walletModel = require('../../models/wallet')
 const moment = require("moment");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
-const authConfig = require('../../authConfig/auth');
 const FcmTokenModel = require('../../models/fcmToken')
 const NotificationModel = require('../../models/notification')
 const DocumentsModel = require('../../models/userDocument')
@@ -145,7 +143,7 @@ class users {
                     _id: data._id,
                     email: data.email
                 }
-                data.token = await jwt.sign(stoken, authConfig.secret, { expiresIn: '7d' });
+                data.token = await jwt.sign(stoken, process.env.SUPERSECRET, { expiresIn: '7d' });
                 return res.json({ code: 200, success: true, message: 'Data save successfully', data: data })
             } else if (error) {
                 res.json({ code: 404, success: false, message: 'Email already exist', data: getUser.email })
@@ -190,8 +188,6 @@ class users {
             } else {
                 res.json({ success: true, message: successMessage })
             }
-
-
         } catch (error) {
             console.log("error in catch", error)
             res.json({ success: false, message: "Somthing went wrong", data: null })
@@ -202,16 +198,18 @@ class users {
         try {
             let { email, password } = req.body
             let getUser = await UsersModel.findOne({ $and: [{ email: email }, { login_type: 'manual' }, { user_type: 'user' }] },
-                { username: 1, email: 1, Referral_id: 1, password: 1, login_type: 1, profile_pic: 1, name: 1 }).lean()
+                { username: 1, email: 1, Referral_id: 1, password: 1, login_type: 1, profile_pic: 1, name: 1, block_user: 1 }).lean()
             // console.log("getUser", getUser)
-            if (getUser) {
+            if(getUser.block_user =='1'){
+               return res.json({ code: 404, success: false, message: 'User is blocked by admin', })
+            }else if (getUser ) {
                 let verifypass = await bcrypt.compareSync(password, getUser.password);
                 if (verifypass) {
                     let stoken = {
                         _id: getUser._id,
                         email: getUser.email
                     }
-                    getUser.token = await jwt.sign(stoken, authConfig.secret, { expiresIn: '7d' });
+                    getUser.token = await jwt.sign(stoken, process.env.SUPERSECRET, { expiresIn: '7d' });
                     if(getUser.profile_pic !=""){
                         getUser.imageUrl = Constants.imageUrl + getUser.profile_pic
                     }else{
@@ -476,7 +474,7 @@ class users {
                         _id: data._id,
                         email: data.email
                     }
-                    data.token = await jwt.sign(stoken, authConfig.secret, { expiresIn: '7d' });
+                    data.token = await jwt.sign(stoken, process.env.SUPERSECRET, { expiresIn: '7d' });
                     res.json({ code: 200, success: true, message: `Password set successfully`, data: data })
                 } else {
                     res.json({ code: 404, success: false, message: 'Please verify your otp' })

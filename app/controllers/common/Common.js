@@ -1,7 +1,5 @@
 
 
-const utilities = require('util');
-const config = require('../../../config/config')
 const NewsModel = require('../../models/news')
 const BlogModel = require('../../models/blogs')
 const CmsModel = require('../../models/cms')

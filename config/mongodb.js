@@ -1,6 +1,6 @@
 const mongoose= require("mongoose");
 
-const uri = `mongodb+srv://arjunwinklix:ulxO3pZu2YySe0f9@cluster0.v7a1w.mongodb.net/bee-ref?retryWrites=true&w=majority`;
+const uri = process.env.MONGO_DB_KEY;
 mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,

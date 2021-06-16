@@ -1,6 +1,3 @@
-
-
-const config = require("../../../config/config")
 const commenFunction = require('../common/Common')
 const UsersModel = require('../../models/users');
 const NewsModel = require('../../models/news')
@@ -8,7 +5,6 @@ const BlogModel = require('../../models/blogs')
 const moment = require("moment");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
-const authConfig = require('../../authConfig/auth')
 class newsAndBlog {
     constructor() {
         return {

@@ -1,12 +1,5 @@
 
 
-
- exports.common={
-     
- }  
- exports.module_type= {} 
- exports.module_activity={}
-
  module.exports = {
     defaultImge: "public/ProfileImage/1621401785066_image.png",
     imageUrl : "http://3.12.65.48:3001/",

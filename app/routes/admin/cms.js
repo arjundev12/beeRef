@@ -8,9 +8,10 @@ let getNewsAndBlog = require('../../controllers/common/Common');
 let cms = require('../../controllers/admin/cms');
 let validationData= require('../../middlewares/FrontendValidator');
 // upload.single('profile_image')
-router.post('/cms/create',cms.create)
-router.put('/cms/update',cms.update)
-router.post('/cms/get',cms.get)
+const Auth = require("../../middlewares/loginToken")
+router.post('/cms/create',Auth.jwtVerify,cms.create)
+router.put('/cms/update',Auth.jwtVerify,cms.update)
+router.post('/cms/get',Auth.jwtVerify,cms.get)
 
 
 
