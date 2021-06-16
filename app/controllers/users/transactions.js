@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 const walletModel = require('../../models/wallet')
 const TransactionModel = require('../../models/transactions');
+const ManagePriceModel = require('../../models/managePrice')
 class users {
     constructor() {
         return {
@@ -46,18 +47,21 @@ class users {
             data.transaction = getUser
             data.wallet
             let walletData = await walletModel.findOne({ user_id: req.body.toId }).populate('user_id', 'ref_to_users').lean()
-            let miningRate =0
+            // let miningRate =0
+            let constantdb = await ManagePriceModel.find()
+            let miningRate = constantdb[0].mining_rate
             if (walletData.user_id.ref_to_users) {
                 for (let item of walletData.user_id.ref_to_users) {
                     let userData = await this._getUserData(item.id)
                     if (userData.minner_Activity == true) {
-                        miningRate += 0.0416666666666667
+                        miningRate += constantdb[0].mining_rate
+                        // activeminer += 1
                     }
 
                 }
             }
             walletData.total_amount = walletData.total_amount.toString()
-            walletData.current_mining_rate = miningRate.toString()
+            walletData.current_mining_rate = miningRate+" /per hour",
             walletData.current_time = moment().utcOffset("+05:30").format("DD.MM.YYYY HH.mm.ss")
             delete walletData.user_id
             data.wallet = walletData
