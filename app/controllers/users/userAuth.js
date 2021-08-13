@@ -143,7 +143,7 @@ class users {
                     _id: data._id,
                     email: data.email
                 }
-                let getUser1 = await UsersModel.findOne({_id: data._id}).lean()
+                let getUser1 = await UsersModel.findOne({_id: data._id},{ username: 1, email: 1, Referral_id: 1, password: 1, login_type: 1, profile_pic: 1, name: 1, block_user: 1 }).lean()
                 if(getUser1.profile_pic !=""){
                     getUser1.imageUrl = Constants.imageUrl + getUser1.profile_pic
                 }else{
