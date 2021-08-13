@@ -143,8 +143,14 @@ class users {
                     _id: data._id,
                     email: data.email
                 }
-                data.token = await jwt.sign(stoken, process.env.SUPERSECRET, { expiresIn: '7d' });
-                return res.json({ code: 200, success: true, message: 'Data save successfully', data: data })
+                let getUser1 = await UsersModel.findOne({_id: data._id}).lean()
+                if(getUser1.profile_pic !=""){
+                    getUser1.imageUrl = Constants.imageUrl + getUser1.profile_pic
+                }else{
+                    getUser1.imageUrl = Constants.imageUrl + Constants.defaultImge
+                }
+                getUser1.token = await jwt.sign(stoken, process.env.SUPERSECRET, { expiresIn: '7d' });
+                return res.json({ code: 200, success: true, message: 'Data save successfully', data: getUser1 })
             } else if (error) {
                 res.json({ code: 404, success: false, message: 'Email already exist', data: getUser.email })
             } else {
