@@ -143,14 +143,22 @@ class users {
                     _id: data._id,
                     email: data.email
                 }
-                let getUser1 = await UsersModel.findOne({_id: data._id},{ username: 1, email: 1, Referral_id: 1, password: 1, login_type: 1, profile_pic: 1, name: 1, block_user: 1 }).lean()
-                if(getUser1.profile_pic !=""){
-                    getUser1.imageUrl = Constants.imageUrl + getUser1.profile_pic
+                if (login_type == 'manual'){
+                    let getUser1 = await UsersModel.findOne({ _id: data._id }).lean()
+                    if (getUser1.profile_pic != "") {
+                        getUser1.imageUrl = Constants.imageUrl + getUser1.profile_pic
+                    } else {
+                        getUser1.imageUrl = Constants.imageUrl + Constants.defaultImge
+                    }
+                    getUser1.token = await jwt.sign(stoken, process.env.SUPERSECRET, { expiresIn: '7d' });
+                    return res.json({ code: 200, success: true, message: 'Data save successfully', data: getUser1 })
+
                 }else{
-                    getUser1.imageUrl = Constants.imageUrl + Constants.defaultImge
+                    data.token = await jwt.sign(stoken, process.env.SUPERSECRET, { expiresIn: '7d' });
+                    return res.json({ code: 200, success: true, message: 'Data save successfully', data: data })
+
                 }
-                getUser1.token = await jwt.sign(stoken, process.env.SUPERSECRET, { expiresIn: '7d' });
-                return res.json({ code: 200, success: true, message: 'Data save successfully', data: getUser1 })
+                
             } else if (error) {
                 res.json({ code: 404, success: false, message: 'Email already exist', data: getUser.email })
             } else {
