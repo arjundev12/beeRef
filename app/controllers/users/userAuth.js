@@ -236,7 +236,7 @@ class users {
                     res.json({ code: 404, success: false, message: 'invalid password', })
                 }
             } else {
-                res.json({ code: 404, success: false, message: 'Email is not register', })
+                res.json({ code: 404, success: false, message: 'Please signup to continue', })
             }
         } catch (error) {
             console.log("Error in catch", error)

@@ -46,6 +46,11 @@ class FrontEntValidator {
                     },
                     email: {
                         notEmpty: true,
+                        isEmail: {
+                            // more than one options must be passed as arrays
+                            // errorMessage: 'Invalid email'
+                            errorMessage: { "field_name": "email", "error_msg": 'please enter valid email id' },
+                        },
                         errorMessage: { "field_name": "name", "error_msg": 'email is required' },
                     },
                     password: {
@@ -215,6 +220,11 @@ class FrontEntValidator {
                 req.checkBody({
                     email: {
                         notEmpty: true,
+                        isEmail: {
+                            // more than one options must be passed as arrays
+                            // errorMessage: 'Invalid email'
+                            errorMessage: { "field_name": "email", "error_msg": '' },
+                        },
                         errorMessage: { "field_name": "email", "error_msg": 'email is required' },
                     },
                     password: {
