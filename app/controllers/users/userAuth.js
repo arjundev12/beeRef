@@ -906,8 +906,9 @@ class users {
             if (Array.isArray(image) && userId) {
                 let array = []
                 for (const item of req.body.image) {
-                    let data = await commenFunction._uploadBase64Profile(item, 'Document')
-                    array.push(data.replace(/\\/g, "/"))
+                    // let data = await commenFunction._uploadBase64Profile(item, 'Document')
+                    // array.push(data.replace(/\\/g, "/"))
+                    array.push(item)
                 }
                 let getData = await DocumentsModel.findOne({owner:userId}).lean()
                  if(getData){
