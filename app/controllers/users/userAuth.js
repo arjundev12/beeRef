@@ -901,7 +901,7 @@ class users {
     async uploadKYCDoc(req, res) {
         try {
             let { image , userId} = req.body
-            console.log("iiiii", image.length , Array.isArray(image) )
+            // console.log("iiiii", image.length , Array.isArray(image) )
             // console.log("hiiii", isArray(image))
             if (Array.isArray(image) && userId) {
                 let array = []
